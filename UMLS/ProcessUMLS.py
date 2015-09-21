@@ -14,7 +14,7 @@ pickle_file = 'pyUMLS.pk'
 write_text = False
 text_file = 'UMLSlite.dat'
 write_rels = False
-METAdir = ''
+METAdir = 'Data/UMLS2012AB/META'
 
 
 def read_concepts(METAdir):
@@ -97,7 +97,7 @@ def read_sem_types(METAdir, concepts):
     f.close()
 
 
-def write_text_umls():
+def write_text_umls(concepts, cuilist):
     global text_file
     global write_rels
     f = open(text_file, 'w')
@@ -109,11 +109,11 @@ def write_text_umls():
         print >>f, k, '||||',
     print >>f, ''
     ct = 0.
-    for cu in cuilist:
+    for cui in cuilist:
         if ct % 50000 == 0:
-            print (100*ct)/len(cuilist), 'written'
+            print (100*ct)/len(concepts), 'written'
         for k in keyset[:8]:
-            print >>f, concepts[cu][k], '||||',
+            print >>f, concepts[cui][k], '||||',
         print>>f, ''
         ct += 1
     f.close()
@@ -124,21 +124,26 @@ def main():
     global write_pickle
     global write_text
     global pickle_file
+    print 'Reading concepts'
     concepts, strtoid, nametoid, cuilist = read_concepts(METAdir)
+    print 'Reading relations'
     read_relations(METAdir, concepts)
+    print 'Reading types'
     read_sem_types(METAdir, concepts)
     if write_pickle:
+        print 'Writing pickle'
         pickle.dump([concepts, cuilist, strtoid, nametoid],
                     open(pickle_file, 'w'))
     if write_text:
-        write_text_umls()
+        print 'Writing text'
+        write_text_umls(concepts, cuilist)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='This program takes some \
      of the RRF files output by the Metamorphosys subset creator, and parses \
      them into a lighter text or pickle format')
-    parser.add_argument("-data", "--corenlp",
+    parser.add_argument("-data", "--umls_data",
                         help="location of the UMLS installation directory \
                               (hint: should contain a META and a NET folder)")
     parser.add_argument("-po", "--pickle_out",
@@ -149,7 +154,7 @@ if __name__ == "__main__":
                         help="writes relations (qualifies, broader than, \
                          etc...) in the text output", action="store_true")
     args = parser.parse_args()
-    if args.data:
+    if args.umls_data:
         METAdir = os.path.abspath(pjoin(args.data, 'META'))
     if args.pickle_out:
         pickle_file = os.path.abspath(args.pickle_out)
