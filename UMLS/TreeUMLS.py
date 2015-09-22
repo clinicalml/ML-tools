@@ -1,6 +1,7 @@
 import numpy as np
 from ProcessUMLS import *
 
+text_file = 'UMLStree.dat'
 degree = 135
 
 goodtypes = [
@@ -182,21 +183,21 @@ def names(lst):
         ct += 1
 
 
-def write_tree(tree, depth, path=[], level=1):
-    print '-' * level
+def write_tree(tree, depth, f, path=[], level=1):
+    print >>f, str('-' * level)
     if level == depth:
-        for i, num in enumerate(tree[:5]):
+        for i, num in enumerate(tree):
             if num == -1:
                 break
             for p in path:
-                print p, '\t',
+                print >>f, p, '\t',
             cui = cuilist[num]
-            print i, '\t', cui, '\t', concepts[cui]['name']
+            print >>f, i, '\t', cui, '\t', concepts[cui]['name']
     else:
-        for i, tr in enumerate(tree[:5]):
+        for i, tr in enumerate(tree):
             if tr == []:
                 break
-            write_tree(tr, depth, path + [i], level + 1)
+            write_tree(tr, depth, f, path + [i], level + 1)
 
 
 def main():
@@ -297,7 +298,9 @@ def main():
 
     # Some printing. TODO: write to file
     names(bal_res['tree'][0][0])
-    write_tree(bal_res['tree'], bal_res['depth'])
+    f = open(text_file, 'w')
+    write_tree(bal_res['tree'], bal_res['depth'], f)
+    f.close()
 
 
 if __name__ == "__main__":
@@ -318,7 +321,6 @@ if __name__ == "__main__":
         METAdir = os.path.abspath(pjoin(args.data, 'META'))
     if args.text_out:
         text_file = os.path.abspath(args.text_out)
-        write_text = True
     if args.degree:
         degree = args.degree
     print 'Starting'
