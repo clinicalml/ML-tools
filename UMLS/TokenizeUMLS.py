@@ -12,6 +12,7 @@ def tokenize_line(lst):
     res[1] = ' '.join(split_tokens(res[1]))
     res[4] = [' '.join(split_tokens(st))
               for st in ast.literal_eval(res[4].strip())]
+    return res
 
 
 def main():
