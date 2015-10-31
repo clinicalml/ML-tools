@@ -67,23 +67,23 @@ def read_umls(UMLSfile, google_concepts_list):
     fmt = "<i"
     # Regular
     data = []
+    lookup = {}
     for i, concept in enumerate(UMLSrest):
         i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
         for st in concept[4]:
             data.append((unicode(st), (i,)))
-    for i, (mid, descriptions) in google_concepts_list:
+    for i, (mid, descriptions) in enumerate(google_concepts_list):
         for st in descriptions:
             data.append((unicode(st), (len(UMLSrest) + i,)))
             lookup[st] = lookup.get(st, []) + [mid]
     trie = marisa_trie.RecordTrie(fmt, data)
     print "Made trie"
-    lookup = {}
     foo = map(lambda x: auxUMLS(x, lookup), UMLS)
     print "Made lookup"
     return UMLS, lookup, trie
 
 
-UMLS, lookup, trie = read_umls(UMLSfile, [])
+#UMLS, lookup, trie = read_umls(UMLSfile, [])
 
 
 def remove_sub_strings(match_list):
