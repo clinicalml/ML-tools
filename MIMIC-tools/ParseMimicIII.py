@@ -59,7 +59,7 @@ for dict_file in dictionary_files:
     f = open(pjoin(MIMIC_dir, dict_file))
     fields = read_csv_line(f.readline().strip())
     for line in f:
-        entry = read_dict_line(line)
+        entry = read_csv_line(line)
         dictionaries[dict_file][entry[1]] = dict(zip(fields, entry))
     f.close()
 
@@ -153,6 +153,7 @@ for pid in patients:
 # 'MARITAL_STATUS', 'NOTES', 'RELIGION', 'ROW_ID', 'SUBJECT_ID']
 #
 # We are going to add fields from other files
+# Tables are described in: https://mimic.physionet.org/mimictables/admissions/
 
 
 # DRG: Contains diagnosis related groups (DRG) codes for patients
@@ -185,6 +186,25 @@ add_info(patients, diagnoses, 'DIAGNOSES')
 prescriptions = file_to_dict('PRESCRIPTIONS_DATA_TABLE.csv')
 add_info(patients, prescriptions, 'PRESCRIPTIONS')
 
-#
+# CPT: Contains current procedural terminology (CPT) codes, which 
+#facilitate billing for procedures performed on patients.
 cpt = file_to_dict('CPTEVENTS_DATA_TABLE.csv')
+add_info(patients, cpt, 'CPT')
 
+# MICROBIOLOGY: Contains microbiology information, including tests
+# performed and sensitivities.
+microbiology = file_to_dict('MICROBIOLOGYEVENTS_DATA_TABLE.csv')
+add_info(patients, microbiology, 'MICROBIOLOGY')
+
+# TIMELINE: Contains all date formatted data.
+datetime = file_to_dict('DATETIMEEVENTS_DATA_TABLE.csv')
+add_info(patients, datetime, 'TIMELINE')
+
+# ICU: Defines each ICUSTAY_ID in the database, i.e. defines a single ICU stay.
+icu = file_to_dict('ICUSTAYEVENTS_DATA_TABLE.csv')
+add_info(patients, icu, 'ICU')
+
+
+
+
+'ICUSTAYEVENTS_DATA_TABLE.csv',
