@@ -85,6 +85,23 @@ def read_umls(UMLSfile, google_concepts_list):
 
 #UMLS, lookup, trie = read_umls(UMLSfile, [])
 
+# Reads a processed version of UMLS and 
+def google_concepts_trie(google_concepts_list):
+    """ A function for creating a tree only for the google concepts."""
+
+    # Prefix trees
+    fmt = "<i"
+    # Regular
+    data = []
+    lookup = {}
+    for i, (mid, descriptions) in enumerate(google_concepts_list):
+        for st in descriptions:
+            data.append((unicode(st), ( i,)))
+            lookup[st] = lookup.get(st, []) + [mid]
+    trie = marisa_trie.RecordTrie(fmt, data)
+    print "Made trie"
+    return lookup, trie
+
 
 def remove_sub_strings(match_list):
     res = []
