@@ -99,7 +99,7 @@ def remove_sub_strings(match_list):
 
 
 # words is a list of words
-def find_concepts(words, trie):
+def find_concepts(words, trie, lookup):
     note_text = unicode(' '.join(words))
     idx = 0
     res = []
@@ -135,12 +135,22 @@ def annotate(words):
     flag = 0
     res = []
     for i, w in enumerate(words):
-        if w in fullstops + midstops + negwords and flag == 1:
+        neg_start_condition = (flag == 1)
+        neg_stop_condition =  (w in fullstops + midstops + negwords)
+        # corner case of end of list without stops
+        neg_end_of_list = (i==(len(words)-1) )
+
+        if neg_start_condition and neg_stop_condition:
             flag = 0
-            res += [(a, i-1)]
+            res += [(start_index, i-1)]
+
+        elif neg_start_condition and neg_end_of_list:
+            flag = 0
+            res += [(start_index, i)]
+            
         if w in negwords:
             flag = 1
-            a = i + 1
+            start_index = i
     return res
 
 
@@ -149,15 +159,17 @@ def annotate(words):
 ## Combine the two
 ##########
 
-def concepts_list(words, trie):
-    concepts = find_concepts(words, trie)
+def concepts_list(words, trie, lookup):
+    concepts = find_concepts(words, trie, lookup)
     negations = annotate(words)
     positive = []
     negative = []
     for co in concepts:
         negated = False
         for span in negations:
-            if span[0] <= co[2] and co[3] <= span[1]:
+            concept_begins = co[2]
+            concept_ends = co[3]
+            if span[0] < concept_begins and concept_ends <= span[1]:
                 negated = True
         if negated:
             negative += [co]
