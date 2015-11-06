@@ -2,7 +2,7 @@ import os
 from os.path import join as pjoin
 
 MIMIC_dir = '/home/jernite/MIMIC3'
-output_dir = pjoin(MIMIC_dir, 'Parsed/MIMIC3_all')
+output_dir = pjoin(MIMIC_dir, 'Parsed/MIMIC3_split')
 
 
 table_files = ['ADMISSIONS_DATA_TABLE.csv', 'DRGCODES_DATA_TABLE.csv',
@@ -26,28 +26,33 @@ for i in range(100):
     os.system('mkdir %s' % (pjoin(output_dir, '%02d' % (i,)),))
 
 
-for file_name in table_files + events_files:
+def split_file(file_name):
     print file_name
     ct = 0
     f = open(pjoin(MIMIC_dir, file_name))
     print f.readline()
     patients = {}
     for line in f:
-        batch_id = int(line.split(',')[1]) / 1000
-        if batch_id >= 100:
-            print line
-            break
-        patients[batch_id] = patients.get(batch_id, []) + [line]
+        patient_id = line[:25].split(',')[1]
+        patients[patient_id] = patients.get(patient_id, []) + [line]
         ct += 1
+        if ct % 10000 == 0:
+            print ct / 1000, '\r',
+            sys.stdout.flush()
         if ct % 1000000 == 0:
-            print ct
-            for bid, lines in patients.items():
+            print ct / 1000, len(patients)
+            for pid, lines in patients.items():
+                bid = int(pid) / 1000
+                if bid > 100:
+                    pprint(lines)
                 of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
                 for l in lines:
                     print >>of, l
                 of.close()
             patients = {}
-    for bid, lines in patients.items():
+            print 'next'
+    for pid, lines in patients.items():
+        bid = int(pid) / 1000
         of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
         for l in lines:
             print >>of, l
@@ -55,5 +60,14 @@ for file_name in table_files + events_files:
     f.close()
 
 
-            
+for file_name in ['CHARTEVENTS_DATA_TABLE.csv', 'IOEVENTS_DATA_TABLE.csv']:
+    split_file(file_name)
+
+    
+for file_name in table_files + events_files:
+    split_file(file_name)
+
+
+
+
 

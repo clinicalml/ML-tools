@@ -200,11 +200,63 @@ add_info(patients, microbiology, 'MICROBIOLOGY')
 datetime = file_to_dict('DATETIMEEVENTS_DATA_TABLE.csv')
 add_info(patients, datetime, 'TIMELINE')
 
-# ICU: Defines each ICUSTAY_ID in the database, i.e. defines a single ICU stay.
+# ICU_STAYS: Defines each ICUSTAY_ID in the database, i.e. defines a
+#  single ICU stay.
 icu = file_to_dict('ICUSTAYEVENTS_DATA_TABLE.csv')
-add_info(patients, icu, 'ICU')
+add_info(patients, icu, 'ICU_STAYS')
+
+# LABS: Contains all laboratory measurements for a given patient,
+# including out patient data.
+labs = file_to_dict('LABEVENTS_DATA_TABLE.csv')
+add_info(patients, labs, 'LABS')
+
+# CHARTEVENTS: Contains all charted data for all patients.
+
+# IOEVENTS: Input/output data for patients.
+
+patient_locations = ['CALLOUT', 'SERVICES', 'TRANSFERS', 'ICU']
+
+general_fields = ['HADM_ID',
+                  'ADMISSION_TYPE', 'ADMITTIME', 'ADMISSION_LOCATION',
+                  'DISCHARGE_LOCATION', 'DISCHTIME',
+                  'CPT', 'DIAGNOSES', 'DIAGNOSIS', 'DEATHTIME',
+                  'INSURANCE', 'MARITAL_STATUS', 'RELIGION', 'LANGUAGE']
+
+timed_fields = ['PROCEDURES', 'NOTES', 'LABS', 'PRESCRIPTIONS']
+
+useless_fields = ['ROW_ID', 'HAS_IOEVENTS_DATA', 'SUBJECT_ID', 'HAS_CHARTEVENTS_DATA']
+
+others = ['ETHNICITY']
+
+
+def make_admission_record(admission):
+    adm_record = {}
+    adm_record['ADMISSION_INFO'] = {}
+    for k in general_fields:
+        adm_record['ADMISSION_INFO'][k] = admission[k]
+    return adm_record
+
+
+def print_patient_record(patient):
+    record = {}
+    record['PATIENT_INFO'] = {}
+    # DOD, combines DOD_HOSP and DOD_SSN, ROW_ID is useless
+    print "*************** PATIENT INFO ***************"
+    print 'SUBJECT_ID', '\t', patient['SUBJECT_ID']
+    print 'GENDER', '\t\t', patient['GENDER']
+    print 'DOB', '\t\t', time.strftime('%m/%d/%Y at %H:%M:%S', patient['DOB'])
+    print 'DOD', '\t\t', time.strftime('%m/%d/%Y at %H:%M:%S', patient['DOD'])
+    print 'DIED', '\t\t', patient['HOSPITAL_EXPIRE_FLAG']
+    pt_admissions = sorted(patient['ADMISSIONS'].values(), key=lambda x:['ADMITTIME'])
+    for i, admission in enumerate(pt_admissions):
+        print "--------------- VISIT %d -----------" % (i,)
+        print 'TYPE', '\t\t', admission['ADMISSION_TYPE']
 
 
 
+print_patient_record(patient)
 
-'ICUSTAYEVENTS_DATA_TABLE.csv',
+#############
+patient = patients[34]
+pt_admissions = sorted(patient['ADMISSIONS'].values(), key=lambda x:['ADMITTIME'])
+admission = pt_admissions[]
