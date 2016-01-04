@@ -13,6 +13,7 @@ from string import punctuation as punct
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+# This is the list of UMLS semantic types we want to match
 goodtypes = [
     'Congenital Abnormality', 'Acquired Abnormality', 'Injury or Poisoning',
     'Pathologic Function', 'Disease or Syndrome', 'None',
@@ -23,7 +24,6 @@ goodtypes = [
 
 UMLSfile = 'UMLStok.dat'
 
-
 # This function reads a split() line of UMLSlite.dat and returns a list
 def remake(UMLSitem):
     res = UMLSitem[:]
@@ -33,7 +33,7 @@ def remake(UMLSitem):
     return res
 
 
-# This function check whether the concept is of the right type
+# This function checks whether the concept is of the right type
 def good_type_list(UMLSitem):
     ls1 = UMLSitem[3]
     res = []
@@ -85,7 +85,8 @@ def read_umls(UMLSfile, google_concepts_list):
 
 #UMLS, lookup, trie = read_umls(UMLSfile, [])
 
-# Reads a processed version of UMLS and 
+"""
+# Same for google concepts
 def google_concepts_trie(google_concepts_list):
     """ A function for creating a tree only for the google concepts."""
 
@@ -101,8 +102,9 @@ def google_concepts_trie(google_concepts_list):
     trie = marisa_trie.RecordTrie(fmt, data)
     print "Made trie"
     return lookup, trie
+"""
 
-
+# This function removes strict sub-matches
 def remove_sub_strings(match_list):
     res = []
     for (match, cuis, start, ending) in match_list:
@@ -115,7 +117,8 @@ def remove_sub_strings(match_list):
     return res
 
 
-# words is a list of words
+# words is a list of words (output of a tokenizer)
+# returns list of UMLS matches
 def find_concepts(words, trie, lookup):
     note_text = unicode(' '.join(words))
     idx = 0
@@ -138,15 +141,14 @@ def find_concepts(words, trie, lookup):
 ############
 ## Negation detection
 ############
-
-
 fullstops=['.', '-', ';']
-midstops=['+', 'but', 'and', 'pt', 'except', 'reports', 'alert', 'complains', 'has', 'states', 'secondary', 'per', 'did', 'aox3']
+midstops=['+', 'but', 'and', 'pt', 'except', 'reports', 'alert',
+          'complains', 'has', 'states', 'secondary', 'per', 'did', 'aox3']
     
 negwords=['no', 'not', 'denies', 'without', 'non']
 
-## returns list of scopes and annotated sentence.
-#Exple: Patient presents no sign of fever but complains of headaches
+# Returns list of negation scopes.
+# Exple: ['Patient', 'presents', 'no', 'sign', 'of', 'fever', 'but', 'complains', 'of', 'headaches']
 # Result: [(2, 5)]
 def annotate(words):
     flag = 0
@@ -176,6 +178,7 @@ def annotate(words):
 ## Combine the two
 ##########
 
+# returns list of positive UMLS matches and negative UMLS matches
 def concepts_list(words, trie, lookup):
     concepts = find_concepts(words, trie, lookup)
     negations = annotate(words)
