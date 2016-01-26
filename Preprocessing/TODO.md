@@ -4,5 +4,6 @@ TODO list
 - - Pro-processing - StandfordNLP tools
 - - Mention identification with CRF / TensorFlow
 - - Mention mapping to UMLS
+- -- inputs: UMLS subset
 - - annotate with negations
 
