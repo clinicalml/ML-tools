@@ -91,7 +91,7 @@ for file_name in table_files + events_files + text_files:
     f.close()
 
 
-batch_dir = pjoin(MIMIC_dir, 'Parsed/MIMIC3_non_text/%02d' % (0,))
+batch_dir = pjoin(MIMIC_dir, 'Parsed/MIMIC3_split/%02d' % (0,))
 
 notes = {}
 # Start with the text notes:
@@ -210,9 +210,15 @@ add_info(patients, icu, 'ICU_STAYS')
 labs = file_to_dict('LABEVENTS_DATA_TABLE.csv')
 add_info(patients, labs, 'LABS')
 
-# CHARTEVENTS: Contains all charted data for all patients.
-
 # IOEVENTS: Input/output data for patients.
+ioevents = file_to_dict('IOEVENTS_DATA_TABLE.csv')
+add_info(patients, ioevents, 'IOEVENTS')
+
+
+# CHARTEVENTS is huge and not necessarily useful...
+# CHARTEVENTS: Contains all charted data for all patients.
+# chart = file_to_dict('CHARTEVENTS_DATA_TABLE.csv')
+
 
 patient_locations = ['CALLOUT', 'SERVICES', 'TRANSFERS', 'ICU']
 
