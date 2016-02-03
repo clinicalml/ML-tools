@@ -1,6 +1,13 @@
 # reads the CRF output
 
 
+def propose_cuis(men, UMLS, lookup):
+    if men.lower() in lookup:
+        return ' '.join([UMLS[idx][0] for idx in lookup[men.lower()]])
+    else:
+        return 'NOT_FOUND'
+
+
 def tags_to_mentions(tagging):
     rebuild = []
     core = []

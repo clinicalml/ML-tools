@@ -16,8 +16,6 @@ output_dir = 'output_files'
 
 batch_size = 0
 num_threads = 1
-verbose = True
-
 
 # process function for multiprocessing
 def process_batch(x):
@@ -44,7 +42,7 @@ def process_batch(x):
             for indices, men in mentions:
                 for i in indices:
                     print >>f, i, 
-                print >>f, '\t', men
+                print >>f, '\t', men, '\t', propose_cuis(men, UMLS, lookup)
             print >>f, ''
         f.close()
     print time.now(), '\t', "Finished tagging batch", nb
@@ -79,28 +77,25 @@ def main():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='This program takes all the \
-     .text files in a DATA folder, does some some standard NLP and feature \
-     extraction, and writes the output in a format which can be used by crf++ \
-     for learning or prediction.')
+    parser = argparse.ArgumentParser(description='This program reads all the \
+     files in a DATA folder, as well as a CRF++ tagging model, and identifies \
+     medical concepts.')
     parser.add_argument("-nlp", "--corenlp",
                         help="location of the Stanford CoreNLP installation")
     parser.add_argument("-data", "--data",
-                        help="location of folder containing the .txt files")
+                        help="location of folder containing the text files")
     parser.add_argument("-umls", "--umls",
-                        help="UMLS text file (UMLSlite.dat)")
+                        help="UMLS text file (UMLSlite.dat / UMLStok.dat)")
     parser.add_argument("-crf_mod", "--crf_model",
                         help="crf++ model file")
     parser.add_argument("-o", "--output",
-                        help="output directory for the crfpp formatted files")
+                        help="output directory")
     parser.add_argument("-b", "--batch",
                         help="how many files to process at a time")
     parser.add_argument("-th", "--threads",
                         help="number of threads")
     parser.add_argument("-tmp", "--temp_dir",
-                        help="specifies a temporary directory for StanCoreNLP")
-    parser.add_argument("-v", "--verbose",
-                        help="increase output verbosity", action="store_true")
+                        help="specifies a temporary directory for StanCoreNLP and CRF++")
     args = parser.parse_args()
     if args.corenlp:
         StanNLPdir = os.path.abspath(args.corenlp)
@@ -118,6 +113,4 @@ if __name__ == "__main__":
         num_threads = int(args.threads)
     if args.temp_dir:
         tmp_dir = os.path.abspath(args.temp_dir)
-    if args.verbose:
-        verbose = True
     main()
