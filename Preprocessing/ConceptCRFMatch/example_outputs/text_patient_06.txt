@@ -1,0 +1,10 @@
+pt with fever , chills , N/V since friday after eating what hethought was undercooked meat .
+2 	fever 	C0015967 C0424755
+4 	chills 	C0085593
+6 	N/V 	NOT_FOUND
+
+Unable to hold po 's down .
+
+Fevers to 103
+0 	Fevers 	C0015967
+

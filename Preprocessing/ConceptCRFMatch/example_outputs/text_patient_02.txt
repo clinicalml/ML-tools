@@ -1,0 +1,13 @@
+30 yr old woman from home afet ra trip and fall down 5 steps , no loc , no head strike .
+16 	loc 	C0041657 C0234425 C0450429 C2698620
+19 20 	head strike 	NOT_FOUND
+
+Unable to weight bear .
+
+Pain in left leg from knee to ankle , some pain also in left knee .
+0 	Pain 	C0030193 C0242936 C1549543 C1557397 C1882272 C2598155
+10 	pain 	C0030193 C0242936 C1549543 C1557397 C1882272 C2598155
+
+No obvious deformity .
+2 	deformity 	C0000768 C0302142 C2117111
+

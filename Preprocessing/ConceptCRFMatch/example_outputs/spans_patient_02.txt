@@ -1,0 +1,51 @@
+0 2 	patient_02
+3 5 	patient_02
+6 9 	patient_02
+10 15 	patient_02
+16 20 	patient_02
+21 25 	patient_02
+26 30 	patient_02
+31 33 	patient_02
+34 38 	patient_02
+39 42 	patient_02
+43 47 	patient_02
+48 52 	patient_02
+53 54 	patient_02
+56 61 	patient_02
+61 62 	patient_02
+63 65 	patient_02
+66 69 	patient_02
+69 70 	patient_02
+71 73 	patient_02
+74 78 	patient_02
+79 85 	patient_02
+85 86 	patient_02
+
+88 94 	patient_02
+95 97 	patient_02
+98 104 	patient_02
+105 109 	patient_02
+109 110 	patient_02
+
+112 116 	patient_02
+117 119 	patient_02
+120 124 	patient_02
+125 128 	patient_02
+129 133 	patient_02
+135 139 	patient_02
+140 142 	patient_02
+143 148 	patient_02
+148 149 	patient_02
+150 154 	patient_02
+155 159 	patient_02
+160 164 	patient_02
+165 167 	patient_02
+168 172 	patient_02
+173 177 	patient_02
+177 178 	patient_02
+
+180 182 	patient_02
+183 190 	patient_02
+191 200 	patient_02
+200 201 	patient_02
+

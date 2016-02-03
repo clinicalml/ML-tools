@@ -1,0 +1,26 @@
+(lp1
+(lp2
+S'pt with fever , chills , N/V since friday after eating what hethought was undercooked meat .'
+p3
+a(lp4
+((I2
+tS'fever'
+tp5
+a((I4
+tS'chills'
+tp6
+a((I6
+tS'N/V'
+tp7
+aaa(lp8
+S"Unable to hold po 's down ."
+p9
+a(lp10
+aa(lp11
+S'Fevers to 103'
+p12
+a(lp13
+((I0
+tS'Fevers'
+tp14
+aaa.

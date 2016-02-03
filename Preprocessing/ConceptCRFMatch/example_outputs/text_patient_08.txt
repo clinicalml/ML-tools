@@ -1,0 +1,6 @@
+from the scene fall of horse landed on r thigh deformity iv fluid 100 fentanyl / morhpine 4 .
+10 	deformity 	C0000768 C0302142 C2117111
+
+no head or neck pain /
+3 4 	neck pain 	C0007859 C1963180
+

@@ -1,0 +1,34 @@
+0 9 	patient_09
+10 18 	patient_09
+19 23 	patient_09
+24 31 	patient_09
+32 37 	patient_09
+38 41 	patient_09
+42 49 	patient_09
+50 56 	patient_09
+57 66 	patient_09
+67 71 	patient_09
+72 74 	patient_09
+75 80 	patient_09
+81 84 	patient_09
+85 91 	patient_09
+92 94 	patient_09
+94 95 	patient_09
+
+96 102 	patient_09
+103 110 	patient_09
+110 111 	patient_09
+
+112 114 	patient_09
+115 121 	patient_09
+122 127 	patient_09
+127 128 	patient_09
+
+129 133 	patient_09
+134 137 	patient_09
+138 140 	patient_09
+141 146 	patient_09
+147 149 	patient_09
+150 152 	patient_09
+152 153 	patient_09
+

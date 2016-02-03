@@ -1,0 +1,34 @@
+(lp1
+(lp2
+S'30 yr old woman from home afet ra trip and fall down 5 steps , no loc , no head strike .'
+p3
+a(lp4
+((I16
+tS'loc'
+tp5
+a((I19
+I20
+tS'head strike'
+tp6
+aaa(lp7
+S'Unable to weight bear .'
+p8
+a(lp9
+aa(lp10
+S'Pain in left leg from knee to ankle , some pain also in left knee .'
+p11
+a(lp12
+((I0
+tS'Pain'
+tp13
+a((I10
+tS'pain'
+tp14
+aaa(lp15
+S'No obvious deformity .'
+p16
+a(lp17
+((I2
+tS'deformity'
+tp18
+aaa.

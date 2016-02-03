@@ -1,0 +1,36 @@
+(lp1
+(lp2
+S'Pt AOx3 presents 2 weeks of intermittent headaches , hx migraines , left sided , denies vision changes , denies weakness , denies numbness , reports intermittent tingling in left arm , none now , speech clear , no facial droop , c/o nausea , no vomitting'
+p3
+a(lp4
+((I6
+I7
+tS'intermittent headaches'
+tp5
+a((I10
+tS'migraines'
+tp6
+a((I16
+I17
+tS'vision changes'
+tp7
+a((I20
+tS'weakness'
+tp8
+a((I23
+tS'numbness'
+tp9
+a((I27
+tS'tingling'
+tp10
+a((I39
+I40
+tS'facial droop'
+tp11
+a((I43
+tS'nausea'
+tp12
+a((I46
+tS'vomitting'
+tp13
+aaa.

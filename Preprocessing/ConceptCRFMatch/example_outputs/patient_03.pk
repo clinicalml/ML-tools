@@ -1,0 +1,32 @@
+(lp1
+(lp2
+S'Pt here from NNNNN hosp.with ?'
+p3
+a(lp4
+aa(lp5
+S'osteomyelitis .'
+p6
+a(lp7
+((I0
+tS'osteomyelitis'
+tp8
+aaa(lp9
+S'Footis pink swollen and warm to the touch on the right foot .'
+p10
+a(lp11
+aa(lp12
+S'Denies fevers at home .'
+p13
+a(lp14
+((I1
+tS'fevers'
+tp15
+aaa(lp16
+S'hx of multiple infections after a mvc ankle break in ...'
+p17
+a(lp18
+((I2
+I3
+tS'multiple infections'
+tp19
+aaa.

@@ -1,0 +1,11 @@
+presents with left sided chest pain intermittant described as gas pain today pain reoccured during episode of stress , developed fluttering in left chest with left arm pain .
+2 3 4 5 	left sided chest pain 	C0541828
+9 10 	gas pain 	C0476289
+12 	pain 	C0030193 C0242936 C1549543 C1557397 C1882272 C2598155
+17 	stress 	C0038435 C0723460
+20 	fluttering 	C0016385
+26 27 	arm pain 	C0239377
+
+Denies n/v/d or dyspnea
+3 	dyspnea 	C0013404 C2024878
+

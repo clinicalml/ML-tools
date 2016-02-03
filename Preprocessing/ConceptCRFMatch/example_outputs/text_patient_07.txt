@@ -1,0 +1,8 @@
+89 yo f s/p esophageal hernia repair 3/09 w / ?
+4 5 	esophageal hernia 	C0376710
+
+g-tube placement now w / c/o 's n & v. family reports pt 's appetite is decreased , no BM x3d .
+19 20 	BM x3d 	NOT_FOUND
+
+generally not feeling well , had a bad day .
+

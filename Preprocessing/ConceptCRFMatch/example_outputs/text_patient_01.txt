@@ -1,0 +1,11 @@
+Pt AOx3 presents 2 weeks of intermittent headaches , hx migraines , left sided , denies vision changes , denies weakness , denies numbness , reports intermittent tingling in left arm , none now , speech clear , no facial droop , c/o nausea , no vomitting
+6 7 	intermittent headaches 	C1168188
+10 	migraines 	C0149931
+16 17 	vision changes 	NOT_FOUND
+20 	weakness 	C0004093 C0086525 C1883552
+23 	numbness 	C0020580 C0028643
+27 	tingling 	C2242996
+39 40 	facial droop 	C0427055
+43 	nausea 	C0027497 C1963179
+46 	vomitting 	NOT_FOUND
+

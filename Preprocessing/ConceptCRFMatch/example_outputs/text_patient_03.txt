@@ -1,0 +1,13 @@
+Pt here from NNNNN hosp.with ?
+
+osteomyelitis .
+0 	osteomyelitis 	C0029443
+
+Footis pink swollen and warm to the touch on the right foot .
+
+Denies fevers at home .
+1 	fevers 	C0015967
+
+hx of multiple infections after a mvc ankle break in ...
+2 3 	multiple infections 	NOT_FOUND
+
