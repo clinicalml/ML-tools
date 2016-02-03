@@ -1,9 +1,12 @@
 # This file contains function to read the text version of UMLS, as produced
 # by https://github.com/clinicalml/ML-tools/blob/master/UMLS/ProcessUMLS.py
+
 import ast
 import marisa_trie
 import sys
 import cPickle as pickle
+
+from datetime import datetime as time
 from nltk.tokenize import word_tokenize as split_tokens
 
 reload(sys)
@@ -57,70 +60,73 @@ def auxUMLS(UMLSitem, lookup):
 # This function reads a text formatted version of UMLS, and returns
 # a list of entries, a lookup table, and a prefix tree
 def read_umls(UMLSfile):
+    print time.now(), '\t', "Reading", UMLSfile
     try:
-        desc, UMLS = pickle.load(open('UMLSlite.pk'))
+        UMLS, lookup, trie, prefix_trie, suffix_trie, spelling_trie, acro_trie = pickle.load(open('UMLSprocessed.pk'))
     except:
         f = open(UMLSfile)
         preUMLS = [(line.strip() + ' ').split(' |||| ')[:-1] for line in f]
         f.close()
-        print "Read UMLS"
+        print time.now(), '\t', "Read UMLS"
         UMLS = map(remake, preUMLS[1:])
-        pickle.dump((preUMLS[0], UMLS), open('UMLSlite.pk', 'w'))
-    print "Loaded UMLS"
-    UMLSrest = filter(lambda x: len(good_type_list(x)) > 0, UMLS)
-    # Prefix trees
-    fmt = "<i"
-    # Regular
-    data = []
-    for i, concept in enumerate(UMLSrest):
-        i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
-        for st in concept[4]:
-            data.append((unicode(st), (i,)))
-    trie = marisa_trie.RecordTrie(fmt, data)
-    # Suffixes
-    data = []
-    for i, concept in enumerate(UMLSrest):
-        i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
-        for st in concept[4]:
-            q = st.split()
-            for j in range(len(q) - 3):
-                new_st = u" ".join(q[j:])
-                data.append((unicode(new_st), (i,)))
-    suffix_trie = marisa_trie.RecordTrie(fmt, data)
-    # Prefixes
-    data = []
-    for i, concept in enumerate(UMLSrest):
-        i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
-        for st in concept[4]:
-            q = st.split()
-            for j in range(3, len(q)):
-                new_st = u" ".join(q[:j])
-                data.append((unicode(new_st), (i,)))
-    prefix_trie = marisa_trie.RecordTrie(fmt, data)
-    # Word prefixes
-    data = []
-    for i, concept in enumerate(UMLSrest):
-        i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
-        for st in concept[4]:
-            if len(st.split()) == 1:
+        print time.now(), '\t', "Loaded UMLS"
+        UMLSrest = filter(lambda x: len(good_type_list(x)) > 0, UMLS)
+        # Prefix trees
+        fmt = "<i"
+        # Regular
+        data = []
+        for i, concept in enumerate(UMLSrest):
+            i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
+            for st in concept[4]:
                 data.append((unicode(st), (i,)))
-    spelling_trie = marisa_trie.RecordTrie(fmt, data)
-    # Acronyms
-    data = []
-    for i, concept in enumerate(UMLSrest):
-        i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
-        for st in concept[4]:
-            q = [unicode(w) for w in st.split()]
-            if len(q) <= 1:
-                continue
-            acro = [w[0] for w in q]
-            data.append((u"".join(acro), (i,)))
-            data.append((u"%s %s" % (q[0], "".join(acro[1:])), (i,)))
-            data.append((u"%s %s" % ("".join(acro[:-1]), q[-1]), (i,)))
-    acro_trie = marisa_trie.RecordTrie(fmt, data)
-    print "Made trie"
-    lookup = {}
-    foo = map(lambda x: auxUMLS(x, lookup), UMLS)
-    print "Made lookup"
+        trie = marisa_trie.RecordTrie(fmt, data)
+        # Suffixes
+        data = []
+        for i, concept in enumerate(UMLSrest):
+            i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
+            for st in concept[4]:
+                q = st.split()
+                for j in range(len(q) - 3):
+                    new_st = u" ".join(q[j:])
+                    data.append((unicode(new_st), (i,)))
+        suffix_trie = marisa_trie.RecordTrie(fmt, data)
+        # Prefixes
+        data = []
+        for i, concept in enumerate(UMLSrest):
+            i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
+            for st in concept[4]:
+                q = st.split()
+                for j in range(3, len(q)):
+                    new_st = u" ".join(q[:j])
+                    data.append((unicode(new_st), (i,)))
+        prefix_trie = marisa_trie.RecordTrie(fmt, data)
+        # Word prefixes
+        data = []
+        for i, concept in enumerate(UMLSrest):
+            i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
+            for st in concept[4]:
+                if len(st.split()) == 1:
+                    data.append((unicode(st), (i,)))
+        spelling_trie = marisa_trie.RecordTrie(fmt, data)
+        # Acronyms
+        data = []
+        for i, concept in enumerate(UMLSrest):
+            i = int(concept[0][1:]) if concept[0].lower() != "cui-less" else 0
+            for st in concept[4]:
+                q = [unicode(w) for w in st.split()]
+                if len(q) <= 1:
+                    continue
+                acro = [w[0] for w in q]
+                data.append((u"".join(acro), (i,)))
+                data.append((u"%s %s" % (q[0], "".join(acro[1:])), (i,)))
+                data.append((u"%s %s" % ("".join(acro[:-1]), q[-1]), (i,)))
+        acro_trie = marisa_trie.RecordTrie(fmt, data)
+        print time.now(), '\t', "Made trie"
+        lookup = {}
+        foo = map(lambda x: auxUMLS(x, lookup), UMLS)
+        print time.now(), '\t', "Made lookup"
+        pickle.dump((UMLS, lookup, trie, prefix_trie, suffix_trie,
+                     spelling_trie, acro_trie), open('UMLSprocessed.pk', 'w'))
+    print time.now(), '\t', "Processed UMLS"
     return UMLS, lookup, trie, prefix_trie, suffix_trie, \
         spelling_trie, acro_trie
