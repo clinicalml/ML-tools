@@ -40,13 +40,14 @@ def process_batch(x):
         text_file = pjoin(output_dir, 'text_' + note_id + '.txt')
         f = open(text_file, 'w')
         for sent, mentions in sentences:
-            print >>f, sentence
+            print >>f, sent
             for indices, men in mentions:
                 for i in indices:
                     print >>f, i, 
                 print >>f, '\t', men
             print >>f, ''
         f.close()
+    print time.now(), '\t', "Finished tagging batch", nb
     devnull.close()
         
 
