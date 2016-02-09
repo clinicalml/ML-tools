@@ -150,26 +150,27 @@ negwords=['no', 'not', 'denies', 'without', 'non']
 # Returns list of negation scopes.
 # Exple: ['Patient', 'presents', 'no', 'sign', 'of', 'fever', 'but', 'complains', 'of', 'headaches']
 # Result: [(2, 5)]
-def annotate(words):
+def annotate(words, max_span_length=20):
     flag = 0
     res = []
+    count_words = 0
     for i, w in enumerate(words):
+        count_words += 1
         neg_start_condition = (flag == 1)
-        neg_stop_condition =  (w in fullstops + midstops + negwords)
+        neg_stop_condition =  (w in fullstops + midstops + negwords) or \
+                              (count_words == max_span_length)
         # corner case of end of list without stops
-        neg_end_of_list = (i==(len(words)-1) )
-
+        neg_end_of_list = (i == (len(words) - 1))
         if neg_start_condition and neg_stop_condition:
             flag = 0
-            res += [(start_index, i-1)]
-
+            res += [(start_index, i - 1)]
         elif neg_start_condition and neg_end_of_list:
             flag = 0
             res += [(start_index, i)]
-            
         if w in negwords:
             flag = 1
             start_index = i
+            count_words = 0
     return res
 
 
