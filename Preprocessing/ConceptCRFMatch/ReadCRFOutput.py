@@ -70,6 +70,70 @@ def treat_sentences(results_file):
             y = [line]
         else:
             y = y + [line]
-    sentences += [read_sentence(''.join(y))]
+
+    sentence = read_sentence(''.join(y))
+    words = sentence[0].split('')
+    identified_concepts = sentence[1]
+    pos, neg = concepts_list(words, identified_concepts)
+    sentences += [(sentence[0], pos, neg)]  
     f.close()
     return sentences
+
+
+
+
+fullstops=['.', '-', ';']
+midstops=['+', 'but', 'and', 'pt', 'except', 'reports', 'alert',
+          'complains', 'has', 'states', 'secondary', 'per', 'did', 'aox3']
+
+negwords=['no', 'not', 'denies', 'without', 'non']
+
+# Returns list of negation scopes.
+# Exple: ['Patient', 'presents', 'no', 'sign', 'of', 'fever', 'but', 'complains', 'of', 'headaches']
+# Result: [(2, 5)]
+def annotate(words, max_span_length=20):
+    flag = 0
+    res = []
+    count_words = 0
+    for i, w in enumerate(words):
+        count_words += 1
+        neg_start_condition = (flag == 1)
+        neg_stop_condition =  (w in fullstops + midstops + negwords) or \
+                              (count_words == max_span_length)
+        # corner case of end of list without stops
+        neg_end_of_list = (i == (len(words) - 1))
+        if neg_start_condition and neg_stop_condition:
+            flag = 0
+            res += [(start_index, i - 1)]
+        elif neg_start_condition and neg_end_of_list:
+            flag = 0
+            res += [(start_index, i)]
+        if w in negwords:
+            flag = 1
+            start_index = i
+            count_words = 0
+    return res
+
+
+#########
+## Combine the two
+##########
+
+# returns list of positive UMLS matches and negative UMLS matches
+def concepts_list(words, identified_concepts):
+    #concepts = find_concepts(words, trie, lookup)
+    negations = annotate(words)
+    positive = []
+    negative = []
+    for co in identified_concepts:
+        negated = False
+        for span in negations:
+            concept_begins = co[0][0]
+            concept_ends = co[0][-1]
+            if span[0] < concept_begins and concept_ends <= span[1]:
+                negated = True
+        if negated:
+            negative += [co]
+        else:
+            positive += [co]
+    return (positive, negative)

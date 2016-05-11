@@ -37,7 +37,7 @@ def process_batch(x):
         pickle.dump(sentences, open(pjoin(output_dir, note_id + '.pk'), 'wb'))
         text_file = pjoin(output_dir, 'text_' + note_id + '.txt')
         f = open(text_file, 'w')
-        for sent, mentions in sentences:
+        for sent, mentions, negative in sentences:
             print >>f, sent
             for indices, men in mentions:
                 for i in indices:
