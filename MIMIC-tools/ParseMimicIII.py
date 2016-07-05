@@ -2,7 +2,7 @@ import os
 import time
 from os.path import join as pjoin
 
-MIMIC_dir = '/home/jernite/MIMIC3'
+MIMIC_dir = '/data/ml2/jernite/MIMIC3'
 
 
 def read_date(stt):
@@ -10,7 +10,7 @@ def read_date(stt):
        return time.strptime(stt, "%Y-%m-%d %H:%M:%S")
     except:
         return stt
-    
+
 
 # The next function parses a string into a string, float or int
 def field_eval(st):
@@ -265,4 +265,3 @@ print_patient_record(patient)
 #############
 patient = patients[34]
 pt_admissions = sorted(patient['ADMISSIONS'].values(), key=lambda x:['ADMITTIME'])
-admission = pt_admissions[]
