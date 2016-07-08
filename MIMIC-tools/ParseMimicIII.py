@@ -97,17 +97,42 @@ notes = {}
 # Start with the text notes:
 f = open(pjoin(batch_dir, 'NOTEEVENTS_DATA_TABLE.csv'))
 header = headers['NOTEEVENTS_DATA_TABLE.csv'][:-1]
+st = []
+nextst = []
+done = False
 for line in f:
-    if line.strip() == '<VISIT>':
-        st = []
-    elif line.strip() == '</VISIT>':
-        visit = dict(zip(header, read_csv_line(st[0][:-2])))
-        visit['TEXT'] = '\n'.join(st[1:])
-        notes[visit['SUBJECT_ID']] = notes.get(visit['SUBJECT_ID'], {})
-        notes[visit['SUBJECT_ID']][visit['HADM_ID']] = notes[visit['SUBJECT_ID']].get(visit['HADM_ID'], []) + [visit]
-        continue
-    else:
-        st += [line.strip()]
+    if line.strip() == '</VISIT>' or done:
+        done = True
+        while done:
+            visit = dict(zip(header, read_csv_line(st[0][:-2])))
+            visit['TEXT'] = '\n'.join(st[1:])
+            notes[visit['SUBJECT_ID']] = notes.get(visit['SUBJECT_ID'], {})
+            notes[visit['SUBJECT_ID']][visit['HADM_ID']] = notes[visit['SUBJECT_ID']].get(visit['HADM_ID'], []) + [visit]
+            st = nextst
+            nextst = []
+            if line.strip() == '</VISIT>' and st:
+                done = True
+            else:
+                done = False
+    elif line.strip() != '<VISIT>':
+        content = line.strip()
+        if st and '"' in content:
+            nextcontent = content[:content.find('"')]
+            nextl = content[content.find('"')+1:].strip()
+            if nextl:
+                nextl = nextl.split(',', 9)
+                nextst = [','.join(nextl[:9])]
+                if nextl[9:]:
+                    nextst += nextl[9:]
+            done = True
+            st += [nextcontent]
+        elif not st:
+            content = content.split(',', 9)
+            st = [','.join(content[:9])]
+            if content[9:]:
+                st += content[9:]
+        else:
+            st += [content]
 
 f.close()
 
@@ -260,8 +285,7 @@ def print_patient_record(patient):
 
 
 
-print_patient_record(patient)
-
 #############
-patient = patients[34]
-pt_admissions = sorted(patient['ADMISSIONS'].values(), key=lambda x:['ADMITTIME'])
+#patient = patients[34]
+#print_patient_record(patient)
+#pt_admissions = sorted(patient['ADMISSIONS'].values(), key=lambda x:['ADMITTIME'])
