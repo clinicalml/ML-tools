@@ -1,5 +1,6 @@
 import os
 import time
+import cPickle as pickle
 from os.path import join as pjoin
 
 MIMIC_dir = '/data/ml2/jernite/MIMIC3'
@@ -282,6 +283,17 @@ def print_patient_record(patient):
     for i, admission in enumerate(pt_admissions):
         print "--------------- VISIT %d -----------" % (i,)
         print 'TYPE', '\t\t', admission['ADMISSION_TYPE']
+
+
+# SAVABLE INFORMATION:
+# patients
+# dictionaries
+# general_fields
+# timed_fields
+# patient_locations
+# useless_fields
+# others
+
 
 
 
