@@ -241,9 +241,26 @@ def save_split(split, headers):
     # CHARTEVENTS: Contains all charted data for all patients.
     # chart = file_to_dict(batch_dir, 'CHARTEVENTS_DATA_TABLE.csv', headers)
 
+    admission_types = set()
+    procedures = set()
+    diagnoses = set()
+    labs = set()
+    prescriptions = set()
     if patients:
         with open(pjoin(Out_dir, 'patients_%02d.pk' % (split,)), 'wb') as f:
             pickle.dump(patients, f, -1)
+        for patient in patients.values():
+            for admission in patient.get('ADMISSIONS', {}).values():
+                admission_types.add(admission.get('ADMISSION_TYPE', ''))
+                for procedure in admission.get('PROCEDURES', []):
+                    procedures.add(procedure.get('ICD9_CODE', ''))
+                for diagnosis in admission.get('DIAGNOSES', []):
+                    diagnoses.add(diagnosis.get('ICD9_CODE', ''))
+                for lab in admission.get('LABS', []):
+                    labs.add(lab.get('ITEMID', ''))
+                for prescription in admission.get('PRESCRIPTIONS', []):
+                    prescriptions.add(prescription.get('NDC', ''))
+    return (admission_types, procedures, diagnoses, labs, prescriptions)
 
 
 class SaveSplit(object):
@@ -260,5 +277,34 @@ save_dictionaries()
 
 print 'patients'
 p = Pool(int(.5 + (.9 * float(multiprocessing.cpu_count()))))
-p.map(SaveSplit(headers), range(100))
+outs = p.map(SaveSplit(headers), range(100))
 
+admission_types = set()
+procedures = set()
+diagnoses = set()
+labs = set()
+prescriptions = set()
+
+for (adm_types, procs, diags, lab, prescs) in outs:
+    admission_types.update(adm_types)
+    procedures.update(procs)
+    diagnoses.update(diags)
+    labs.update(lab)
+    prescriptions.update(prescs)
+
+admission_types = list(admission_types)
+procedures = list(procedures)
+diagnoses = list(diagnoses)
+labs = list(labs)
+prescriptions = list(prescriptions)
+
+print 'admission_types:', len(admission_types)
+print 'procedures:', len(procedures)
+print 'diagnoses:', len(diagnoses)
+print 'labs:', len(labs)
+print 'prescriptions:', len(prescriptions)
+
+with open(pjoin(Out_dir, 'vocab_aux.pk' % (split,)), 'wb') as f:
+    pickle.dump({'admission_types': admission_types, 'procedures': procedures,
+                 'diagnoses': diagnoses, 'labs': labs,
+                 'prescriptions': prescriptions}, f, -1)
