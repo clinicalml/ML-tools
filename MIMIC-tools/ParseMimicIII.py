@@ -19,7 +19,7 @@ def read_date(stt):
 
 # The next function parses a string into a string, float or int
 def field_eval(st):
-    if len(st) > 1:
+    if len(st) > 0:
         if st[0] == '"':
             res = st[1:-1]
         else:
