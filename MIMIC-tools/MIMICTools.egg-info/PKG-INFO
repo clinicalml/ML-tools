@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: MIMICTools
+Version: 0.1dev-r0
+Summary: MIMIC tools
+Home-page: UNKNOWN
+Author: Ankit Vani
+Author-email: ankit.vani@nyu.edu
+License: UNKNOWN
+Description: Utilities for parsing MIMIC data
+Keywords: mimic
+Platform: UNKNOWN
