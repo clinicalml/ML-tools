@@ -1,5 +1,7 @@
 import os
 import time
+import re
+
 import cPickle as pickle
 from os.path import join as pjoin
 
@@ -53,6 +55,8 @@ def read_csv_line(line):
 #####################
 
 icd9_dic = {}
+icd9_dx  = {}
+icd9_sg  = {}
 
 f = open('icd9.csv')
 for line in f:
@@ -61,19 +65,56 @@ for line in f:
 
 f.close()
 
+f = open('CMS32_DESC_SHORT_DX.txt')
+for line in f:
+    st = line.strip().split()
+    icd9_dx[st[0]] = (' '.join(st[1:]), '')
 
-def icd9_lookup(st):
+f.close()
+
+f = open('CMS32_DESC_LONG_DX.txt')
+for line in f:
+    st = line.strip().split()
+    prev = icd9_dx.get(st[0], ('', ''))
+    icd9_dx[st[0]] = (prev[0], ' '.join(st[1:]))
+
+f.close()
+
+f = open('CMS32_DESC_SHORT_SG.txt')
+for line in f:
+    st = line.strip().split()
+    icd9_sg[st[0]] = (' '.join(st[1:]), '')
+
+f.close()
+
+f = open('CMS32_DESC_LONG_SG.txt')
+for line in f:
+    st = line.strip().split()
+    prev = icd9_sg.get(st[0], ('', ''))
+    icd9_sg[st[0]] = (prev[0], ' '.join(st[1:]))
+
+f.close()
+
+
+def icd9_lookup(st, mode=''):
     try:
-        return (st, icd9_dic[st][0], icd9_dic[st][1])
+        if mode == 'dx':
+            return (st, icd9_dx[st][0], icd9_dx[st][1], st)
+        elif mode == 'sg':
+            return (st, icd9_sg[st][0], icd9_sg[st][1], st)
+    except:
+        pass
+    try:
+        return (st, icd9_dic[st][0], icd9_dic[st][1], st)
     except:
         pass
     for i in range(len(st), 1, -1):
         try:
             stb = st[:i] + '.' + st[i:]
-            return (stb, icd9_dic[stb][0], icd9_dic[stb][1])
+            return (stb, icd9_dic[stb][0], icd9_dic[stb][1], st)
         except:
             pass
-    return (st, 'not found', 'na')
+    return (st, 'not found', 'na', st)
 
 #####################
 ## Aux
@@ -314,21 +355,24 @@ def extract_admission(adm, gender='', died=''):
     res['GENDER']           = gender
     res['HOSP_EXPIRE_FLAG'] = died
     res['DIAGNOSIS']        = adm.get('DIAGNOSIS', '')
-    res['DIAGNOSES']        = [icd9_lookup(dg['ICD9_CODE'])
+    res['DIAGNOSES']        = [icd9_lookup(dg['ICD9_CODE'], mode='dx')
                                for dg in adm.get('DIAGNOSES', [])]
     drug_list = set([ps['DRUG'] 
                      for ps in adm.get('PRESCRIPTIONS', [])])
     res['PRESCRIPTIONS']    = sorted(list(drug_list))
-    res['PROCEDURES']       = [icd9_lookup(pc['ICD9_CODE'])
+    res['PROCEDURES']       = [icd9_lookup(pc['ICD9_CODE'], mode='sg')
                                for pc in adm.get('PROCEDURES', [])]
     res['NOTES']            = [(note.get('CATEGORY', ''),
                                 note.get('DESCRIPTION', ''),
-                                note.get('TEXT', ''))
+                                re.sub('_{3,}',
+                                       '__',
+                                       ' '.join(note.get('TEXT',
+                                                         '').split())))
                                for note in adm.get('NOTES', [])]
     return res
 
 
-for batch_num in range(34, 100):
+for batch_num in range(100):
     print 'treating batch %02d' % (batch_num,)
     batch_dir = pjoin(MIMIC_dir, 'Parsed/MIMIC3_split/%02d' % (batch_num,))
     try:
