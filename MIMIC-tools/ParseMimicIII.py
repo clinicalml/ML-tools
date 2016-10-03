@@ -2,7 +2,7 @@ import os
 import time
 from os.path import join as pjoin
 
-MIMIC_dir = '/home/jernite/MIMIC3'
+MIMIC_dir = '/data/ml2/jernite/MIMIC3/'
 
 
 def read_date(stt):
@@ -259,10 +259,34 @@ def print_patient_record(patient):
         print 'TYPE', '\t\t', admission['ADMISSION_TYPE']
 
 
+#####################
+#### ICD9
+#####################
 
-print_patient_record(patient)
+icd9_dic = {}
+
+f = open('icd9.csv')
+for line in f:
+    st = line.strip().split(',')
+    icd9_dic[st[0]] = (st[1], st[2])
+
+f.close()
+
+def icd9_lookup(st):
+    try:
+        return (st, icd9_dic[st][0], icd9_dic[st][1])
+    except:
+        pass
+    for i in range(len(st), 1, -1):
+        try:
+            stb = st[:i] + '.' + st[i:]
+            return (stb, icd9_dic[stb][0], icd9_dic[stb][1])
+        except:
+            pass
+    return (st, 'not found', 'na')
+
 
 #############
-patient = patients[34]
+patient = patients[518]
+print_patient_record(patient)
 pt_admissions = sorted(patient['ADMISSIONS'].values(), key=lambda x:['ADMITTIME'])
-admission = pt_admissions[]
