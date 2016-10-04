@@ -372,6 +372,19 @@ def extract_admission(adm, gender='', died=''):
     return res
 
 
+def print_admission_ext(adm, max_chars=100, max_notes=10):
+    print '-- GENDER', adm['GENDER'], 'EXP_FLAG', adm['HOSP_EXPIRE_FLAG']
+    print '-- DIAGNOSIS --------', adm['DIAGNOSIS']
+    print '-- DIAGNOSES'
+    pprint([dx[2] for dx in adm['DIAGNOSES']])
+    print '-- PROCEDURES'
+    pprint([dx[2] for dx in adm['PROCEDURES']])
+    print '-- PRESCRIPTIONS'
+    pprint(adm['PRESCRIPTIONS'])
+    print '-- NOTES'
+    pprint([(note[0], note[1], pre_process_str(note[2][:max_chars] + '...'))
+            for note in adm['NOTES'][:max_notes]])
+
 for batch_num in range(100):
     print 'treating batch %02d' % (batch_num,)
     batch_dir = pjoin(MIMIC_dir, 'Parsed/MIMIC3_split/%02d' % (batch_num,))
