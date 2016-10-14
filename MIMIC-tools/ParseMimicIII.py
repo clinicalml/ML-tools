@@ -216,9 +216,7 @@ def treat_batch(batch_dir):
             continue
         else:
             st += [line.strip()]
-
     f.close()
-
     patients = file_to_dict('PATIENTS_DATA_TABLE.csv', batch_dir)
     admissions = file_to_dict('ADMISSIONS_DATA_TABLE.csv', batch_dir)
     for pid in patients:
@@ -228,8 +226,6 @@ def treat_batch(batch_dir):
                 admission['NOTES'] = notes.get(pid, {}).get(admission['HADM_ID'], [])
             patients[pid] = patients[pid][0]
             patients[pid]['ADMISSIONS'] = dict([(ad['HADM_ID'], ad) for ad in admission_list])
-
-
     # After reading PATIENTS_DATA_TABLE, NOTEEVENTS_DATA_TABLE, and ADMISSIONS_DATA_TABLE,
     # an admission item looks like this (for patient 16, admission 103251):
     # sorted(patients[16]['ADMISSIONS'][103251].keys())
@@ -240,56 +236,44 @@ def treat_batch(batch_dir):
     #
     # We are going to add fields from other files
     # Tables are described in: https://mimic.physionet.org/mimictables/admissions/
-
     # DRG: Contains diagnosis related groups (DRG) codes for patients
     drgs = file_to_dict('DRGCODES_DATA_TABLE.csv', batch_dir)
     add_info(patients, drgs, 'DRG')
-
     # PROCEDURES: Contains ICD procedures for patients, most notably ICD-9
     # procedures
     procedures = file_to_dict('PROCEDURES_ICD_DATA_TABLE.csv', batch_dir)
     add_info(patients, procedures, 'PROCEDURES')
-
     # CALLOUT: Provides information when a patient was READY for discharge
     # from the ICU, and when the patient was actually discharged
     callout = file_to_dict('CALLOUT_DATA_TABLE.csv', batch_dir)
     add_info(patients, callout, 'CALLOUT')
-
     # SERVICES: Lists services that a patient was admitted/transferred under
     services = file_to_dict('SERVICES_DATA_TABLE.csv', batch_dir)
     add_info(patients, services, 'SERVICES')
-
     # TRANSFERS: Physical locations for patients throughout their hospital stay
     transfers = file_to_dict('TRANSFERS_DATA_TABLE.csv', batch_dir)
     add_info(patients, transfers, 'TRANSFERS')
-
     # DIAGNOSES: Physical locations for patients throughout their hospital stay
     diagnoses = file_to_dict('DIAGNOSES_ICD_DATA_TABLE.csv', batch_dir)
     add_info(patients, diagnoses, 'DIAGNOSES')
-
     # PRESCRIPTIONS: Contains medication related order entries, i.e. prescriptions.
     prescriptions = file_to_dict('PRESCRIPTIONS_DATA_TABLE.csv', batch_dir)
     add_info(patients, prescriptions, 'PRESCRIPTIONS')
-
     # CPT: Contains current procedural terminology (CPT) codes, which 
     #facilitate billing for procedures performed on patients.
     cpt = file_to_dict('CPTEVENTS_DATA_TABLE.csv', batch_dir)
     add_info(patients, cpt, 'CPT')
-
     # MICROBIOLOGY: Contains microbiology information, including tests
     # performed and sensitivities.
     microbiology = file_to_dict('MICROBIOLOGYEVENTS_DATA_TABLE.csv', batch_dir)
     add_info(patients, microbiology, 'MICROBIOLOGY')
-
     # TIMELINE: Contains all date formatted data.
     datetime = file_to_dict('DATETIMEEVENTS_DATA_TABLE.csv', batch_dir)
     add_info(patients, datetime, 'TIMELINE')
-
     # ICU_STAYS: Defines each ICUSTAY_ID in the database, i.e. defines a
     #  single ICU stay.
     icu = file_to_dict('ICUSTAYEVENTS_DATA_TABLE.csv', batch_dir)
     add_info(patients, icu, 'ICU_STAYS')
-
     #~ # LABS: Contains all laboratory measurements for a given patient,
     #~ # including out patient data.
     #~ labs = file_to_dict('LABEVENTS_DATA_TABLE.csv', batch_dir)
@@ -302,7 +286,6 @@ def treat_batch(batch_dir):
     # CHARTEVENTS is huge and not necessarily useful...
     # CHARTEVENTS: Contains all charted data for all patients.
     # chart = file_to_dict('CHARTEVENTS_DATA_TABLE.csv', batch_dir)
-    
     return patients
 
 
@@ -335,14 +318,15 @@ def print_admission(adm, note_p=False):
     print adm.get('DIAGNOSIS', '')
     print '-- DIAGNOSES'
     for dg in adm.get('DIAGNOSES', []):
-        print icd9_lookup(dg['ICD9_CODE'])
+        print icd9_lookup(dg['ICD9_CODE'], mode='dx')
     print '-- PRESCRIPTIONS'
-    drug_list = set([ps['DRUG'] for ps in adm.get('PRESCRIPTIONS', [])])
+    drug_list = set([(ps['DRUG'], ps['GSN'], ps['NDC'])
+                     for ps in adm.get('PRESCRIPTIONS', [])])
     for drug in sorted(list(drug_list)):
         print drug
     print '-- PROCEDURES'
     for pc in adm.get('PROCEDURES', []):
-        print icd9_lookup(pc['ICD9_CODE'])
+        print icd9_lookup(pc['ICD9_CODE'], mode='sg')
     print '-- NOTES'
     for note in adm.get('NOTES', []):
         print '----', note.get('CATEGORY', ''), note.get('DESCRIPTION', '')
@@ -357,7 +341,9 @@ def extract_admission(adm, gender='', died=''):
     res['DIAGNOSIS']        = adm.get('DIAGNOSIS', '')
     res['DIAGNOSES']        = [icd9_lookup(dg['ICD9_CODE'], mode='dx')
                                for dg in adm.get('DIAGNOSES', [])]
-    drug_list = set([ps['DRUG'] 
+    drug_list = set([(('NAME', ps['DRUG']),
+                      ('GCN_SEQNO', ps['GSN']),
+                      ('NDC', ps['NDC'])) 
                      for ps in adm.get('PRESCRIPTIONS', [])])
     res['PRESCRIPTIONS']    = sorted(list(drug_list))
     res['PROCEDURES']       = [icd9_lookup(pc['ICD9_CODE'], mode='sg')
@@ -398,10 +384,9 @@ for batch_num in range(100):
                         admissions_list += [extract_admission(adm,
                                                gender=patient.get('GENDER', ''),
                                                died=patient.get('HOSPITAL_EXPIRE_FLAG', ''))]
-
-        f = open(pjoin(batch_dir, 'admissions_%02d.pk' % (batch_num,)), 'w')
-        pickle.dump(admissions_list, f)
-        f.close()
+        #~ f = open(pjoin(batch_dir, 'admissions_%02d.pk' % (batch_num,)), 'w')
+        #~ pickle.dump(admissions_list, f)
+        #~ f.close()
         print 'found %d admissions' % (len(admissions_list),)
     except:
         print 'error'
