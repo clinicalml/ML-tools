@@ -7,7 +7,7 @@ class MimicAdmission():
     def __init__(self, patient line):
     self.patient         = patient
     split_line           = line.strip().split(',')
-    indices              = self.indices['ADMISSION']
+    indices              = self.pateint.mimic_desc.indices['ADMISSION']
     
     self.patient_id      = split_line[indices['SUBJECT_ID']] 
     self.admission_id    = split_line[indices['HADM_ID']] 
