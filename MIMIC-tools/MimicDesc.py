@@ -84,5 +84,5 @@ class MimicDesc:
                                     for i, f in enumerate(self.fields['DRGCODES_DATA_TABLE.csv'])]) 
         self.indices['PSC'] = dict([(f, i)
                                     for i, f in enumerate(self.fields['PRESCRIPTIONS_DATA_TABLE.csv'])]) 
-        self.indices['ADMIN'] = dict([(f, i)
+        self.indices['ADMISSION'] = dict([(f, i)
                                     for i, f in enumerate(self.fields['ADMISSIONS_DATA_TABLE.csv'])])
