@@ -3,6 +3,7 @@ class MimicDesc:
     
     def __init__(self):
         self.fields = {}
+        
         self.fields['PATIENTS_DATA_TABLE.csv']      = ['ROW_ID'
                                                        'SUBJECT_ID',
                                                        'GENDER',
@@ -35,7 +36,7 @@ class MimicDesc:
                                                             'SUBJECT_ID', 'HADM_ID',
                                                             'CHARTDATE', 'CHARTTIME',
                                                             'SPEC_ITEM_ID', 'SPEC_TYPE_CD',
-                                                            'SPEC_TYPE_DESC', ORG_ITEMID,
+                                                            'SPEC_TYPE_DESC', 'ORG_ITEMID',
                                                             'ORG_CD', 'ORG_NAME',
                                                             'ISOLATE_NUM', 'AB_ITEMID',
                                                             'AB_ITEMID', 'AB_CD'
@@ -57,6 +58,17 @@ class MimicDesc:
                                                        "DOSE_VAL_RX", "DOSE_UNIT_RX",
                                                        "FORM_VAL_DISP", "FORM_UNIT_DISP",
                                                        "ROUTE"]
+        
+        self.fields['ADMISSIONS_DATA_TABLE.csv'] = ['ROW_ID', 'SUBJECT_ID',
+                                                   'HADM_ID', 'CHARTDATE',
+                                                   'CHARTTIME', 'SPEC_ITEMID',
+                                                   'SPEC_TYPE_DESC', 'ORG_ITEMID',
+                                                   'ORG_CD', 'ORG_NAME', 'ISOLATE_NUM',
+                                                   'AB_ITEMID', 'AB_CD', 'AB_NAME',
+                                                   'DILUTION_TEXT', 'DILUTION_COMPARISON',
+                                                   'DILUTION_VALUE', 'INTERPRETATION']                   
+        
+        self.indices = {}
                                                  
         self.indices['PATIENT'] = dict([(f, i)
                                     for i, f in enumerate(self.fields['PATIENTS_DATA_TABLE.csv'])])
@@ -66,10 +78,11 @@ class MimicDesc:
                                     for i, f in enumerate(self.fields['ICUSTAYEVENTS_DATA_TABLE.csv'])])
         self.indices['LAB'] = dict([(f, i)
                                     for i, f in enumerate(self.fields['LABEVENTS_DATA_TABLE.csv'])])
-        self.indeces['MICROBIO'] = dict([(f, i)
-                                    for i, f in enumerate(self.fields['MICROBIOLOGYEVENTS_DATA_TABLE.csv'])]')
+        self.indices['MICROBIO'] = dict([(f, i)
+                                    for i, f in enumerate(self.fields['MICROBIOLOGYEVENTS_DATA_TABLE.csv'])])
         self.indices['DRG'] = dict([(f, i)
                                     for i, f in enumerate(self.fields['DRGCODES_DATA_TABLE.csv'])]) 
         self.indices['PSC'] = dict([(f, i)
                                     for i, f in enumerate(self.fields['PRESCRIPTIONS_DATA_TABLE.csv'])]) 
-
+        self.indices['ADMIN'] = dict([(f, i)
+                                    for i, f in enumerate(self.fields['ADMISSIONS_DATA_TABLE.csv'])])
