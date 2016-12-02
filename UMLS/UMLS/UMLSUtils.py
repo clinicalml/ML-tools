@@ -121,7 +121,7 @@ class Concept:
       tab      = line.strip().split('|')
       source            = tab[indices['SAB']]
       definition        = tab[indices['DEF']]
-      self.definitions  += (definition, source)
+      self.definitions  += [(definition, source)]
 
 
    def add_mrsty_atom(self, line):
