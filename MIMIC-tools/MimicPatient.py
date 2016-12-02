@@ -1,6 +1,18 @@
 from MimicDesc import *
 from MimicEvent import *
 
+class MimicAdmission():
+    def __init__(self, patient line):
+    self.patient      = patient
+    split_line        = line.strip().split(',')
+    
+    indices           = self.indices['ADMIN']      
+    self.patient_id   = split_line[indices['SUBJECT_ID']]
+    self.admission_id = split_line[indices['HADM_ID']]
+    self.times        = (split_line[indices['CHARTDATE']], split_line[indices['CHARTTIME']]) 
+
+         
+
 class MimicPatient:
 
     def __init__(self, line, mimic_desc):
@@ -15,7 +27,7 @@ class MimicPatient:
         
         self.dod           = ''
         if len(tab[indices['DOD']]) > 0:
-            self.dod       = tab[indices[.'DOD']]
+            self.dod       = tab[indices['DOD']]
         elif len(tab[indices['DOD_HOSP']]) > 0:
             self.dod       = tab[indices['DOD_HOSP']]
         else:
@@ -24,48 +36,4 @@ class MimicPatient:
         # Maps admission_ids to admission class object 
         self.admissions    = {} 
 
-
-class MimicAdmGlobal:
-
-
-    def __init__(self):
-        self.admission_time = ''
-        self.row_id         = None
-        #self.subject_id    = 
-        self.admission_id   = None
-        self.disch_time     = ''
-        self.death_time     = ''
-        self.admission_type = ''
-        self.admission_loc  = ''
-        self.disch_loc      = ''
-        self.insurance      = ''
-        self.language       = ''
-        self.religion       = ''
-        self.marital_status = ''
-        self.ethnicity      = ''
-        self.edreg_time     = ''
-        self.edout_time     = ''
-        self.diagnosis      = ''
-        #self.hosp_exp_flag  = None
-        self.has_io_ev_data = None
-        self.has_ch_ev_data = None
- 
-
-    
-class MimicAdmission:
-
-
-    def __init__(self, line):
-        
-        self.global_info   = MimicAdmGlobal()
-        self.procedures    = []
-        self.presriptions  = []
-        self.diagnoses     = []
-        self.drgs          = []
-        self.callout       = ''
-        self.services      = []
-        self.transferes    = []
-        self.cpt           = []
-        self.labs          = []
-        # TODO
 
