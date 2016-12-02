@@ -2,16 +2,31 @@ from MimicDesc import *
 from MimicEvent import *
 
 class MimicAdmission():
-    def __init__(self, patient line):
-    self.patient      = patient
-    split_line        = line.strip().split(',')
     
-    indices           = self.indices['ADMIN']      
-    self.patient_id   = split_line[indices['SUBJECT_ID']]
-    self.admission_id = split_line[indices['HADM_ID']]
-    self.times        = (split_line[indices['CHARTDATE']], split_line[indices['CHARTTIME']]) 
+    
+    def __init__(self, patient line):
+    self.patient         = patient
+    split_line           = line.strip().split(',')
+    indices              = self.indices['ADMISSION']
+    
+    self.patient_id      = split_line[indices['SUBJECT_ID']] 
+    self.admission_id    = split_line[indices['HADM_ID']] 
+    
+    self.times           = (split_line[indices['ADMITTIME']],
+                            split_line[indices['DISCHTIME']],
+                            split_line[indices['DEATHTIME']] )
+               
+    self.admission_type  = split_line[indices['ADMISSION_TYPE']] 
+    self.location        = (split_line[indices['ADMISSION_LOCATION']],  split_line[indices['DISCHARGE_LOCATION']])
+          
+    self.language        = split_line[indices['LANGUAGE']]
+    self.religon         = split_line[indices['RELIGION']]
+    self.marital_status  = split_line[indices['MARITAL_STATUS']]
+    self.ethnicity       = split_line[indices['ETHNICITY']]
+    
+    self.diagnosis       = split_line[indices['DIAGNOSIS']]
+    self.expire_flag     = split_line[indices['HOSPITAL_EXPIRE_FLAG']]
 
-         
 
 class MimicPatient:
 
