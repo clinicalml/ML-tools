@@ -4,20 +4,19 @@ import argparse
 
 from os.path import join as pjoin
 
+
 from UMLSUtils import *
 
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='This program \
                  reads the UMLS RRF files, and writes a shelf file.')
-   parser.add_argument("-rrf", "--rrf_folder", default='/data/ml2/UMLS/2016AA/META/',
+   parser.add_argument("-rrf", "--rrf_folder", default='Data/RRF',
                        help="location of the RRF files")
-   parser.add_argument("-rxn", "--rxsat_file", default='/data/ml2/UMLS/2016AA/RXNORM_RRF/RXNSAT.RRF',
+   parser.add_argument("-rxn", "--rxsat_file", default='/data/ml2/jernite/UMLS2016/RXNORM_RRF/RXNSAT.RRF',
                        help="location of the RRF files")
    parser.add_argument("-ml", "--max_lines", default=int(1e9), type=int,
                        help="cap the number of lines to read from a file")
-   parser.add_argument("-o", "--output_dir", default='',
-                       help="where to store the output")
    args = parser.parse_args()
    
    # start preparing
@@ -48,7 +47,7 @@ if __name__ == "__main__":
       umls_index.make_ndc_mapping(args.rxsat_file)
    # saving
    print 'saving the index'
-   with open(pjoin(args.output_dir, 'umls_index.pk'), 'wb') as pickle_file:
+   with open('umls_index.pk', 'wb') as pickle_file:
       pickle.dump(umls_index, pickle_file)
    
    # read MRDEF.RRF
@@ -99,7 +98,5 @@ if __name__ == "__main__":
          break
    mrrel_file.close()
    
-   umls_shelve_dict  = shelve.open(pjoin(args.output_dir,
-					 "umls_shelve_dict.shlf"))
+   umls_shelve_dict  = shelve.open("umls_shelve_dict.shlf")
    umls_shelve_dict.update(umls_dict)
-

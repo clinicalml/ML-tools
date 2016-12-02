@@ -2,11 +2,11 @@ class UMLSDescriptor:
 
 
    def __init__(self):
-      self.mrconso_fields 	= ['CUI', 'LAT', 'TS', 'LUI', 'STT', 'SUI',
+      self.mrconso_fields   = ['CUI', 'LAT', 'TS', 'LUI', 'STT', 'SUI',
                               'ISPREF', 'AUI', 'SAUI', 'SCUI', 'SDUI',
                               'SAB', 'TTY', 'CODE', 'STR', 'SRL', 'SUPPRESS',
                               'CVF']
-      self.mrconso_indices	= dict([(f, i)
+      self.mrconso_indices  = dict([(f, i)
                                    for i, f in enumerate(self.mrconso_fields)])
       self.mrdef_fields    = ['CUI', 'AUI', 'ATUI', 'SATUI', 'SAB', 'DEF',
                               'SUPPRESS', 'CVF']
@@ -109,7 +109,7 @@ class Concept:
       source            = tab[indices['SAB']]
       source_code       = tab[indices['CODE']]
       name_str          = tab[indices['STR']]
-      if is_concept_name or (self.name == ''):
+      if is_concept_name or self.name == '':
          self.name   = name_str
       self.names           = list(set(self.names + [name_str]))
       self.codes[source]   = list(set(self.codes.get(source, []) + \
