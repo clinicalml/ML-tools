@@ -5,7 +5,7 @@ import argparse
 from os.path import join as pjoin
 
 
-from UMLSUtils import *
+from UMLS.UMLSUtils import *
 
 
 if __name__ == "__main__":
