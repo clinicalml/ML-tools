@@ -35,8 +35,8 @@ class CptEvent(MimicEvent):
         split_line      = line.strip().split(',')
         indices         = self.indices['CPT']
         
-        self.start_time = split_line[indices['CHARTDATE']]
-        self.end_time   = self.start_time
+        self.date       = split_line[indices['CHARTDATE']]
+        
         self.info       = (split_line[indices['SECTIONHEADER']], 
                            split_line[indices['SUBSECTIONHEADER']],
                            split_line[indices['DESCRIPTION']])
@@ -47,12 +47,17 @@ class LabEvent(MimicEvent):
     
     def __init__(self, patient, admission, line):
         super(MimicEvent, self).__init__(patient, admission) 
-        split_line    = line.strip().split(',')
-        indices       = indices['LAB']
-        self.value    = (split_line[indices['VALUE']],
-                         split_line[indices['VALUENUM']],
-                         split_line[indices['VALUEOM']])
-        self.flag     = split_line[indices['FLAG']]]
+        split_line      = line.strip().split(',')
+        indices         = self.indices['LAB']
+        self.start_time = split_line[indices['CHARTTIME']]
+        self.end_time   = split_line[indices['CHARTTIME']]
+        
+        self.lab_id     = split_line[indices['ITEMID']]
+                                     
+        self.value      = (split_line[indices['VALUE']],
+                           split_line[indices['VALUENUM']],
+                           split_line[indices['VALUEOM']])
+        self.flag       = split_line[indices['FLAG']]]
        
         
 # MICROBIOLOGYEVENTS_DATA_TABLE.csv
