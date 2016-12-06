@@ -274,10 +274,10 @@ def treat_batch(batch_dir):
     #  single ICU stay.
     icu = file_to_dict('ICUSTAYEVENTS_DATA_TABLE.csv', batch_dir)
     add_info(patients, icu, 'ICU_STAYS')
-    #~ # LABS: Contains all laboratory measurements for a given patient,
-    #~ # including out patient data.
-    #~ labs = file_to_dict('LABEVENTS_DATA_TABLE.csv', batch_dir)
-    #~ add_info(patients, labs, 'LABS')
+    # LABS: Contains all laboratory measurements for a given patient,
+    # including out patient data.
+    labs = file_to_dict('LABEVENTS_DATA_TABLE.csv', batch_dir)
+    add_info(patients, labs, 'LABS')
     #~ 
     #~ # IOEVENTS: Input/output data for patients.
     #~ ioevents = file_to_dict('IOEVENTS_DATA_TABLE.csv', batch_dir)
