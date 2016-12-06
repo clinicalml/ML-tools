@@ -1,6 +1,7 @@
 from MimicDesc import *
+from MimicPatient import *
 
-class MimicEvent:
+class MimicEvent(object):
 
 
     def __init__(self, patients, indices, split_line):
@@ -15,7 +16,11 @@ class MimicEvent:
         try:
             self.admission  = self.patient.admissions[admission_id]
         except:
-            print 'ERROR--------', '\t', 'ADMISSION NOT FOUND', patient_id, admission_id
+            self.patient.admissions[admission_id] = MimicAdmission(patients,
+                                                                   patient_id=patient_id,
+                                                                   admission_id=admission_id)
+            self.admission  = self.patient.admissions[admission_id]
+            print 'ERROR--------', '\t', 'ADMISSION NOT FOUND PTT', patient_id, 'ADM', admission_id, '\r',
 
         self.date       = None
         self.start_time = None
@@ -27,7 +32,7 @@ class CptEvent(MimicEvent):
 
     def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['CPT']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(CptEvent, self).__init__(patients, indices, split_line)
 
         self.date       = split_line[indices['CHARTDATE']]
 
@@ -45,12 +50,12 @@ class CptEvent(MimicEvent):
 class IcuEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['ICU']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(IcuEvent, self).__init__(patients, indices, split_line)
 
         self.start_time = split_line[indices['INTIME']]
-        self.end_time   = split_line[indices['OUTIME']]
+        self.end_time   = split_line[indices['OUTTIME']]
 
         self.icu_length = split_line[indices['LOS']]
         self.icu_id     = split_line[indices['ICUSTAY_ID']]
@@ -63,9 +68,9 @@ class IcuEvent(MimicEvent):
 class LabEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['LAB']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(LabEvent, self).__init__(patients, indices, split_line)
 
         self.start_time = split_line[indices['CHARTTIME']]
         self.end_time   = split_line[indices['CHARTTIME']]
@@ -73,7 +78,7 @@ class LabEvent(MimicEvent):
         self.lab_id     = split_line[indices['ITEMID']]
         self.lab_value  = (split_line[indices['VALUE']],
                            split_line[indices['VALUENUM']],
-                           split_line[indices['VALUEOM']])
+                           split_line[indices['UOM']])
         # normal or abnormal
         self.lab_flag   = split_line[indices['FLAG']]
 
@@ -83,9 +88,9 @@ class LabEvent(MimicEvent):
 class MicroEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['MIC']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(MicroEvent, self).__init__(patients, indices, split_line)
 
         self.start_time      = split_line[indices['CHARTTIME']]
         self.end_time        = split_line[indices['CHARTTIME']]
@@ -108,9 +113,9 @@ class MicroEvent(MimicEvent):
 class DrugEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['DRG']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(DrugEvent, self).__init__(patients, indices, split_line)
 
         self.drg_codes   = (split_line[indices['DRG_TYPE']],
                             split_line[indices['DRG_CODE']])
@@ -126,9 +131,9 @@ class DrugEvent(MimicEvent):
 class PrescriptionEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['PSC']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(PrescriptionEvent, self).__init__(patients, indices, split_line)
 
         self.start_time    = split_line[indices['STARTTIME']]
         self.end_time      = split_line[indices['ENDTIME']]
@@ -155,11 +160,24 @@ class PrescriptionEvent(MimicEvent):
 class ProcedureEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['PCD']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(ProcedureEvent, self).__init__(patients, indices, split_line)
 
         self.seq_no     = split_line[indices['PROC_SEQ_NUM']]
+        self.code       = split_line[indices['ICD9_CODE']]
+        
+        self.admission.pcd_events += [self]
+
+# DIAGNOSES_ICD_DATA_TABLE.csv 
+class DiagnosisEvent(MimicEvent):
+
+
+    def __init__(self, patients, mimic_desc, split_line):
+        indices         = mimic_desc.indices['DGN']
+        super(DiagnosisEvent, self).__init__(patients, indices, split_line)
+
+        self.seq_no     = split_line[indices['SEQUENCE']]
         self.code       = split_line[indices['ICD9_CODE']]
         
         self.admission.pcd_events += [self]
@@ -168,9 +186,9 @@ class ProcedureEvent(MimicEvent):
 class NoteEvent(MimicEvent):
 
 
-    def __init__(self, patients, mimic_Desc, split_line):
+    def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['NTE']
-        super(MimicEvent, self).__init__(patients, indices, split_line)
+        super(NoteEvent, self).__init__(patients, indices, split_line)
 
         self.date       = split_line[indices['CHARTDATE']]
         self.note_cat   = split_line[indices['CATEGORY']]

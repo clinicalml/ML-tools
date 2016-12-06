@@ -41,14 +41,14 @@ class MimicDesc:
         self.fields['LABEVENTS_DATA_TABLE.csv']     = ['ROW_ID',
                                                        'SUBJECT_ID', 'HADM_ID',
                                                        'ITEMID',
-                                                       'CHARTTIME'
-                                                       'VALUE', 'VALUENUM', 'VALUEUOM',
+                                                       'CHARTTIME',
+                                                       'VALUE', 'VALUENUM', 'UOM',
                                                        'FLAG']
 
         self.fields['MICROBIOLOGYEVENTS_DATA_TABLE.csv'] = ['ROW_ID',
                                                             'SUBJECT_ID', 'HADM_ID',
                                                             'CHARTDATE', 'CHARTTIME',
-                                                            'SPEC_ITEM_ID', 'SPEC_TYPE_CD',
+                                                            'SPEC_ITEMID', 'SPEC_TYPE_CD',
                                                             'SPEC_TYPE_DESC',
                                                             'ORG_ITEMID', 'ORG_CD', 'ORG_NAME',
                                                             'ISOLATE_NUM',
@@ -76,6 +76,11 @@ class MimicDesc:
         self.fields['PROCEDURES_ICD_DATA_TABLE.csv'] = ['ROW_ID',
                                                         'SUBJECT_ID', 'HADM_ID',
                                                         'PROC_SEQ_NUM',
+                                                        'ICD9_CODE']
+
+        self.fields['DIAGNOSES_ICD_DATA_TABLE.csv']  = ['ROW_ID',
+                                                        'SUBJECT_ID', 'HADM_ID',
+                                                        'SEQUENCE',
                                                         'ICD9_CODE']
 
         self.fields['NOTEEVENTS_DATA_TABLE.csv']     = ['ROW_ID', 'RECORD_ID',
@@ -106,6 +111,8 @@ class MimicDesc:
                                         for i, f in enumerate(self.fields['PRESCRIPTIONS_DATA_TABLE.csv'])]) 
         self.indices['PCD']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['PROCEDURES_ICD_DATA_TABLE.csv'])])
+        self.indices['DGN']     = dict([(f, i)
+                                        for i, f in enumerate(self.fields['DIAGNOSES_ICD_DATA_TABLE.csv'])])
         self.indices['NTE']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['NOTEEVENTS_DATA_TABLE.csv'])])
 

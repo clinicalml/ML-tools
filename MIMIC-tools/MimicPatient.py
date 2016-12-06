@@ -1,33 +1,38 @@
 from MimicDesc import *
-from MimicEvent import *
 
 class MimicAdmission:
 
 
-    def __init__(self, patients, mimic_desc, split_line):
-        indices         = mimic_desc.indices['ADM']
-        self.patient_id = split_line[indices['SUBJECT_ID']]
+    def __init__(self, patients, mimic_desc=None, split_line=None,
+                 patient_id=None, admission_id=None):
+        if patient_id == None:
+            indices         = mimic_desc.indices['ADM']
+
+            self.patient_id = split_line[indices['SUBJECT_ID']]
+            self.admission_id    = split_line[indices['HADM_ID']]
+
+            self.in_time    = split_line[indices['ADMITTIME']]
+            self.out_time   = split_line[indices['DISCHTIME']]
+            self.death_time = split_line[indices['DEATHTIME']]
+
+            self.adm_type   = split_line[indices['ADMISSION_TYPE']] 
+            self.in_loc     = split_line[indices['ADMISSION_LOCATION']]
+            self.out_loc    = split_line[indices['DISCHARGE_LOCATION']]
+
+            self.language   = split_line[indices['LANGUAGE']]
+            self.religion   = split_line[indices['RELIGION']]
+            self.married    = split_line[indices['MARITAL_STATUS']]
+            self.ethnicity  = split_line[indices['ETHNICITY']]
+
+            self.diagnosis  = split_line[indices['DIAGNOSIS']]
+        else:
+            self.patient_id     = patient_id
+            self.admission_id   = admission_id
+        
         try:
             self.patient    = patients[self.patient_id]
         except:
             print 'ERROR--------', '\t', 'PATIENT NOT FOUND', self.patient_id
-
-        self.admission_id    = split_line[indices['HADM_ID']]
-
-        self.in_time    = split_line[indices['ADMITTIME']]
-        self.out_time   = split_line[indices['DISCHTIME']]
-        self.death_time = split_line[indices['DEATHTIME']]
-
-        self.adm_type   = split_line[indices['ADMISSION_TYPE']] 
-        self.in_loc     = split_line[indices['ADMISSION_LOCATION']]
-        self.out_loc    = split_line[indices['DISCHARGE_LOCATION']]
-
-        self.language   = split_line[indices['LANGUAGE']]
-        self.religion   = split_line[indices['RELIGION']]
-        self.married    = split_line[indices['MARITAL_STATUS']]
-        self.ethnicity  = split_line[indices['ETHNICITY']]
-
-        self.diagnosis  = split_line[indices['DIAGNOSIS']]
         
         self.cpt_events = []
         self.icu_events = []
