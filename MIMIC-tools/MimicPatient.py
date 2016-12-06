@@ -1,7 +1,7 @@
 from MimicDesc import *
 from MimicEvent import *
 
-class MimicAdmission():
+class MimicAdmission:
     
     
     def __init__(self, patient line):
@@ -47,7 +47,7 @@ class MimicPatient:
             self.dod       = tab[indices['DOD_HOSP']]
         else:
             self.dod       = tab[indices['DOD_SSN']]
-        self.expire_flag   = tab[indices['EXPIRE_FLAG']]
+        self.expire_flag   = tab[indices['HOSPITAL_EXPIRE_FLAG']]
         # Maps admission_ids to admission class object 
         self.admissions    = {} 
 
