@@ -4,50 +4,32 @@ import shelve
 from os.path import join as pjoin
 
 from MimicPatient import *
-
+from Utils import *
 
 from pprint import pprint
 
 def read_patients_file(file_name):
     patients     = {}
     mimic_desc    = MimicDesc()
-    try:
-        f = open(file_name)
-        print "Reading", file_name
-    except:
-        print "ERROR-------- File", file_name, "not found."
-        return patients
-    for line in f:
-        split_line = line.strip().split(',')
-        if len(split_line) > 1:
-            try:
-                patient = MimicPatient(mimic_desc, split_line)
-                if patient.patient_id in patients:
-                    print "DUPLICATE OBSERVATIONS FOR PATIENT_ID:", patient.patient_id
-                else:
-                    patients[patient.patient_id] = patient
-            except:
-                print "ERROR-------- Line", line
-    f.close()
+    for split_line in read_mimic_csv(file_name):
+        try:
+            patient = MimicPatient(mimic_desc, split_line)
+            if patient.patient_id in patients:
+                print "DUPLICATE OBSERVATIONS FOR PATIENT_ID:", patient.patient_id
+            else:
+                patients[patient.patient_id] = patient
+        except:
+            print "ERROR-------- Line", split_line
     return patients
 
 
 def read_admissions_file(patients, file_name):
     mimic_desc    = MimicDesc()
-    try:
-        f = open(file_name)
-        print "Reading", file_name
-    except:
-        print "ERROR-------- File", file_name, "not found."
-    for line in f:
-        split_line = line.strip().split(',')
-        if len(split_line) > 1:
+    for split_line in read_mimic_csv(file_name):
+        try:
             adm = MimicAdmission(patients, mimic_desc, split_line)
-            try:
-                adm = MimicAdmission(patients, mimic_desc, split_line)
-            except:
-                print "ERROR-------- Line", line
-    f.close()
+        except:
+            print "ERROR-------- Line", split_line
 
 
 if __name__ == "__main__":

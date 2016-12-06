@@ -23,7 +23,7 @@ class MimicAdmission:
         self.out_loc    = split_line[indices['DISCHARGE_LOCATION']]
 
         self.language   = split_line[indices['LANGUAGE']]
-        self.religon    = split_line[indices['RELIGION']]
+        self.religion   = split_line[indices['RELIGION']]
         self.married    = split_line[indices['MARITAL_STATUS']]
         self.ethnicity  = split_line[indices['ETHNICITY']]
 
