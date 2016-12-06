@@ -5,7 +5,7 @@ class MimicDesc:
     def __init__(self):
         self.fields = {}
 
-        self.fields['PATIENTS_DATA_TABLE.csv']  = ['ROW_ID'
+        self.fields['PATIENTS_DATA_TABLE.csv']  = ['ROW_ID',
                                                    'SUBJECT_ID',
                                                    'GENDER',
                                                    'DOB',
@@ -87,7 +87,7 @@ class MimicDesc:
                                                         'TEXT']
 
         self.indices = {}
-        self.indices['PATIENT'] = dict([(f, i)
+        self.indices['PTT']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['PATIENTS_DATA_TABLE.csv'])])
         self.indices['ADM']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['ADMISSIONS_DATA_TABLE.csv'])])
@@ -98,7 +98,7 @@ class MimicDesc:
                                         for i, f in enumerate(self.fields['ICUSTAYEVENTS_DATA_TABLE.csv'])])
         self.indices['LAB']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['LABEVENTS_DATA_TABLE.csv'])])
-        self.indices['MICRO']   = dict([(f, i)
+        self.indices['MIC']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['MICROBIOLOGYEVENTS_DATA_TABLE.csv'])])
         self.indices['DRG']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['DRGCODES_DATA_TABLE.csv'])]) 
@@ -106,6 +106,6 @@ class MimicDesc:
                                         for i, f in enumerate(self.fields['PRESCRIPTIONS_DATA_TABLE.csv'])]) 
         self.indices['PCD']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['PROCEDURES_ICD_DATA_TABLE.csv'])])
-        self.indices['NOTE']    = dict([(f, i)
+        self.indices['NTE']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['NOTEEVENTS_DATA_TABLE.csv'])])
 
