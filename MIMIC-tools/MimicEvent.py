@@ -49,7 +49,8 @@ class CptEvent(MimicEvent):
 
     def __str__(self):
         res = self.time + '\t' + 'CPT Event ' + '\t'
-        res += str(self.cpt_info)
+        res += '\t --DESCRIPTION-- \t' + str(self.cpt_info[0]) 
+        res += '\t' + str(self.cpt_info[1]) 
         return res
 
 # ICUSTAYEVENTS_DATA_TABLE.csv
@@ -74,16 +75,15 @@ class IcuEvent(MimicEvent):
 
 
     def __str__(self):
-        res = self.time + '\t' + 'ICU Event ' + '\t'
-        res += self.start_time + '\t' + self.icu_info[0] + '\t to \t'
-        res += self.end_time + '\t' + self.icu_info[1]
+        res = self.time + '\t' + 'ICU Event '
+        res += '\t --START-- \t' + self.start_time + '\t --AT-- \t' + self.icu_info[0]
+        res += '\t --END-- \t' + self.end_time + '\t --AT-- \t' + self.icu_info[1]
         return res
 
 # LABEVENTS_DATA_TABLE.csv
 class LabEvent(MimicEvent):
 
 
-    # TODO: map ITEMID to dictionary file D_LABITEMS  -> label and LOINC
     def __init__(self, patients, mimic_desc, split_line):
         indices         = mimic_desc.indices['LAB']
         super(LabEvent, self).__init__(patients, indices, split_line)
@@ -94,6 +94,12 @@ class LabEvent(MimicEvent):
             self.time = self.start_time
 
         self.lab_id     = split_line[indices['ITEMID']]
+
+        name, loinc     = mimic_desc.dictionaries['D_LABS'].get(self.lab_id,
+                                                                ('',''))
+        self.lab_name   = name
+        self.lab_loinc  = loinc
+
         self.lab_value  = (split_line[indices['VALUE']],
                            split_line[indices['VALUENUM']],
                            split_line[indices['UOM']])
@@ -104,44 +110,44 @@ class LabEvent(MimicEvent):
 
 
     def __str__(self):
-        # TODO: map ITEMID to dictionary file -> name
-        res = self.time + '\t' + 'LAB Event ' + '\t'
-        res += 'status' + self.lab_flag
+        res = self.time + '\t' + 'LAB Event '
+        res += '\t --NAME-- \t' +  self.lab_name
+        res += '\t --LOINC-- \t' + self.lab_loinc
+        res += '\t --STATUS-- \t' + self.lab_flag
         return res
 
 # MICROBIOLOGYEVENTS_DATA_TABLE.csv
 class MicroEvent(MimicEvent):
 
 
-    # TODO: map SPEC_ITEMID to dictionary file D_ITEMS -> name
     def __init__(self, patients, mimic_desc, split_line):
-        indices         = mimic_desc.indices['MIC']
+        indices             = mimic_desc.indices['MIC']
         super(MicroEvent, self).__init__(patients, indices, split_line)
 
-        self.start_time      = split_line[indices['CHARTTIME']]
-        self.end_time        = split_line[indices['CHARTTIME']]
+        self.start_time     = split_line[indices['CHARTTIME']]
+        self.end_time       = split_line[indices['CHARTTIME']]
         if self.start_time != '':
             self.time = self.start_time
 
-        self.date            = split_line[indices['CHARTDATE']]
+        self.date           = split_line[indices['CHARTDATE']]
 
-        self.code            = split_line[indices['SPEC_TYPE_CD']]
-        self.item_id         = split_line[indices['SPEC_ITEMID']]
+        self.code           = split_line[indices['SPEC_TYPE_CD']]
+        self.item_id        = split_line[indices['SPEC_ITEMID']]
 
-        self.description     = split_line[indices['SPEC_TYPE_DESC']]
-        self.dilution        = (split_line[indices['DILUTION_TEXT']], 
-                                split_line[indices['DILUTION_COMPARISON']],
-                                split_line[indices['DILUTION_VALUE']])
+        self.description    = split_line[indices['SPEC_TYPE_DESC']]
+        self.dilution       = (split_line[indices['DILUTION_TEXT']], 
+                               split_line[indices['DILUTION_COMPARISON']],
+                               split_line[indices['DILUTION_VALUE']])
 
-        self.interpretation   = split_line[indices['INTERPRETATION']]
+        self.interpretation = split_line[indices['INTERPRETATION']]
 
         self.admission.mic_events += [self]
 
 
     def __str__(self):
-        # TODO: map SPEC_ITEMID to dictionary file -> name
-        res = self.time + '\t' + 'MICRO Event ' + '\t'
-        res += self.description + '\t interpretation \t' + self.interpretation
+        res = self.time + '\t' + 'MICRO Event '
+        res += '\t --DESCRIPTION-- \t' + self.description
+        res += '\t --INTERPRETATION-- \t' + self.interpretation
         return res
 
 # DRGCODES_DATA_TABLE.csv
@@ -165,8 +171,9 @@ class DrugEvent(MimicEvent):
 
 
     def __str__(self):
-        res = self.time + '\t' + 'DRUG Event ' + '\t'
-        res += self.description + '\t severity \t' + str(self.severity)
+        res = self.time + '\t' + 'DRUG Event '
+        res += '\t --DESCRIPTION-- \t' + self.description[:20]
+        res += '\t --SEVERITY-- \t' + str(self.severity)
         return res
 
 # PRESCRIPTIONS_DATA_TABLE.csv
@@ -202,9 +209,10 @@ class PrescriptionEvent(MimicEvent):
 
 
     def __str__(self):
-        res = self.time + '\t' + 'PRESCRIPTION Event ' + '\t'
-        res += self.drug_names[0] + '\t' + self.drug_codes[0] + '\t' 
-        res += self.drug_info[-1] + '\t NDC \t' + self.drug_codes[-1]
+        res = self.time + '\t' + 'PRESCRIPTION Event '
+        res += '\t --NAME-- \t' + self.drug_names[0] + ' -- ' + self.drug_codes[0]
+        res += '\t --ROUTE-- \t' + self.drug_info[-1]
+        res += '\t --NDC-- \t' + self.drug_codes[-1]
         return res
 
 # PROCEDURES_ICD_DATA_TABLE.csv 
@@ -217,12 +225,16 @@ class ProcedureEvent(MimicEvent):
 
         self.seq_no     = split_line[indices['PROC_SEQ_NUM']]
         self.code       = split_line[indices['ICD9_CODE']]
+
+        self.name       = mimic_desc.dictionaries['D_PCD'][self.code][0]
         
         self.admission.pcd_events += [self]
 
 
     def __str__(self):
-        res = self.time + '\t' + 'PROCEDURE Event ' + '\t ICD9 \t' + self.code
+        res = self.time + '\t' + 'PROCEDURE Event '
+        res += '\t --NAME-- \t' + self.name
+        res += '\t --ICD9-- \t' + self.code
         return res
 
 # DIAGNOSES_ICD_DATA_TABLE.csv 
@@ -235,14 +247,17 @@ class DiagnosisEvent(MimicEvent):
 
         self.seq_no     = split_line[indices['SEQUENCE']]
         self.code       = split_line[indices['ICD9_CODE']]
-        
+
+        self.name       = mimic_desc.dictionaries['D_DGN'][self.code][0]        
+
         self.admission.dgn_events += [self]
 
 
     def __str__(self):
-        res = self.time + '\t' + 'DIAGNOSIS Event ' + '\t ICD9 \t' + self.code
+        res = self.time + '\t' + 'DIAGNOSIS Event '
+        res += '\t --NAME-- \t' + self.name
+        res += '\t --ICD9-- \t' + self.code
         return res
-
 
 # NOTEEVENTS_DATA_TABLE.csv 
 class NoteEvent(MimicEvent):
@@ -267,9 +282,10 @@ class NoteEvent(MimicEvent):
 
 
     def __str__(self):
-        res = self.time + '\t' + 'NOTE Event \t'
+        res = self.time + '\t' + 'NOTE Event '
         if self.erroneous == '':
-            res += self.note_cat + '\t' + self.note_desc + '\t' + self.note_text[:100] + '...'
+            res += '\t --NOTE_TYPE-- \t' + self.note_cat + ' --' + self.note_desc
+            res += '\t' + self.note_text[:100] + '...'
         else:
-            res += 'ERRONEOUS'
+            res += '\t --ERRONEOUS-- \t'
         return res

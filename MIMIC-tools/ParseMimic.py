@@ -105,13 +105,13 @@ if __name__ == "__main__":
                         default=-1, type=int,
                         help="maximum lines to be read in a file")
     args = parser.parse_args()
-    #print args.MIMIC3_folder
     mimic_desc    = MimicDesc()
+    mimic_desc.read_dic_files(args.MIMIC3_directory)
     patients_shelve  = shelve.open(args.output_file)
     file_name    = pjoin(args.MIMIC3_directory, 'PATIENTS_DATA_TABLE.csv')
-    patients     = read_patients_file(file_name, mimic_desc) # , max_lines=args.max_lines)
+    patients     = read_patients_file(file_name, mimic_desc)
     file_name    = pjoin(args.MIMIC3_directory, 'ADMISSIONS_DATA_TABLE.csv')
-    read_admissions_file(patients, file_name, mimic_desc) # , max_lines=args.max_lines)
+    read_admissions_file(patients, file_name, mimic_desc)
     dir_name     = pjoin(args.MIMIC3_directory)
     read_events_file(patients, dir_name, mimic_desc, max_lines=args.max_lines)
     patients_shelve.update(patients)

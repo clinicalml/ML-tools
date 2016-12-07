@@ -1,3 +1,7 @@
+from os.path import join as pjoin
+
+from Utils import *
+
 class MimicDesc:
 
 
@@ -115,3 +119,98 @@ class MimicDesc:
                                         for i, f in enumerate(self.fields['DIAGNOSES_ICD_DATA_TABLE.csv'])])
         self.indices['NTE']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['NOTEEVENTS_DATA_TABLE.csv'])])
+
+
+    def read_dic_files(self, dir_name):
+        self.fields['D_CPT_DATA_TABLE.csv']     = ['ROW_ID',
+                                                   'CATEGORY',
+                                                   'SECTIONRANGE', 'SECTIONHEADER',
+                                                   'SUBSECTIONRANGE', 'SUBSECTIONHEADER',
+                                                   'CODESUFFIX',
+                                                   'MINCODEINSUBSECTION', 'MAXCODEINSUBSECTION']
+
+        self.fields['D_ITEMS_DATA_TABLE.csv']   = ['ROW_ID',
+                                                   'ITEMID',
+                                                   'LABEL', 'ABBREVIATION',
+                                                   'DBSOURCE', 'LINKSTO',
+                                                   'CODE', 'CATEGORY',
+                                                   'UNITNAME', 'PARAM_TYPE',
+                                                   'LOWNORMALVALUE', 'HIGHNORMALVALUE']
+
+        self.fields['D_LABITEMS_DATA_TABLE.csv']        = ['ROW_ID',
+                                                           'ITEMID',
+                                                           'LABEL', 'FLUID', 'CATEGORY',
+                                                           'LOINC_CODE']
+
+        self.fields['D_ICD_DIAGNOSES_DATA_TABLE.csv']   = ['ROW_ID',
+                                                           'ICD9_CODE',
+                                                           'SHORT_TITLE', 'LONG_TITLE']
+
+        self.fields['D_ICD_PROCEDURES_DATA_TABLE.csv']  = ['ROW_ID',
+                                                           'ICD9_CODE',
+                                                           'SHORT_TITLE', 'LONG_TITLE']
+
+        self.indices['D_CPT']   = dict([(f, i)
+                                        for i, f in enumerate(self.fields['D_CPT_DATA_TABLE.csv'])])
+        self.indices['D_ITEMS'] = dict([(f, i)
+                                        for i, f in enumerate(self.fields['D_ITEMS_DATA_TABLE.csv'])])
+        self.indices['D_LABS']  = dict([(f, i)
+                                        for i, f in enumerate(self.fields['D_LABITEMS_DATA_TABLE.csv'])])
+        self.indices['D_DGN']   = dict([(f, i)
+                                        for i, f in enumerate(self.fields['D_ICD_DIAGNOSES_DATA_TABLE.csv'])])
+        self.indices['D_PCD']   = dict([(f, i)
+                                        for i, f in enumerate(self.fields['D_ICD_PROCEDURES_DATA_TABLE.csv'])])
+
+        self.dictionaries               = {}
+        # D_CPT_DATA_TABLE.csv : TODO (useful?)
+        # D_ITEMS_DATA_TABLE.csv: microbiology
+        self.dictionaries['D_ITEMS']    = {}
+        indices     = self.indices['D_ITEMS']
+        file_name   = pjoin(dir_name, 'D_ITEMS_DATA_TABLE.csv')
+        for split_line in read_mimic_csv(file_name):
+            try:
+                itemid  = split_line[indices['ITEMID']]
+                label   = split_line[indices['LABEL']]
+                code    = split_line[indices['CODE']]
+                self.dictionaries['D_ITEMS'][itemid] = label
+            except:
+                print "ERROR-------- Line", split_line
+        # D_LABITEMS_DATA_TABLE.csv: labs
+        self.dictionaries['D_LABS']     = {}
+        indices     = self.indices['D_LABS']
+        file_name   = pjoin(dir_name, 'D_LABITEMS_DATA_TABLE.csv')
+        for split_line in read_mimic_csv(file_name):
+            try:
+                itemid  = split_line[indices['ITEMID']]
+                label   = split_line[indices['LABEL']]
+                code    = split_line[indices['LOINC_CODE']]
+                self.dictionaries['D_LABS'][itemid] = (label, code)
+            except:
+                print "ERROR-------- Line", split_line
+        # D_ICD_DIAGNOSES_DATA_TABLE.csv: diagnoses
+        self.dictionaries['D_DGN']      = {}
+        indices     = self.indices['D_DGN']
+        file_name   = pjoin(dir_name, 'D_ICD_DIAGNOSES_DATA_TABLE.csv')
+        for split_line in read_mimic_csv(file_name):
+            try:
+                icd9    = split_line[indices['ICD9_CODE']]
+                name_s  = split_line[indices['SHORT_TITLE']]
+                name_l  = split_line[indices['LONG_TITLE']]
+                self.dictionaries['D_DGN'][icd9] = (name_s, name_l)
+            except:
+                print "ERROR-------- Line", split_line
+        # D_ICD_PROCEDURES_DATA_TABLE.csv: procedures
+        self.dictionaries['D_PCD']      = {}
+        indices     = self.indices['D_PCD']
+        file_name   = pjoin(dir_name, 'D_ICD_PROCEDURES_DATA_TABLE.csv')
+        for split_line in read_mimic_csv(file_name):
+            try:
+                icd9    = split_line[indices['ICD9_CODE']]
+                name_s  = split_line[indices['SHORT_TITLE']]
+                name_l  = split_line[indices['LONG_TITLE']]
+                self.dictionaries['D_PCD'][icd9] = (name_s, name_l)
+            except:
+                print "ERROR-------- Line", split_line
+
+
+
