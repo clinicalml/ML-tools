@@ -115,4 +115,3 @@ class MimicDesc:
                                         for i, f in enumerate(self.fields['DIAGNOSES_ICD_DATA_TABLE.csv'])])
         self.indices['NTE']     = dict([(f, i)
                                         for i, f in enumerate(self.fields['NOTEEVENTS_DATA_TABLE.csv'])])
-

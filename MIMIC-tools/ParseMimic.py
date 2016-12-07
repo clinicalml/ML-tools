@@ -116,5 +116,5 @@ if __name__ == "__main__":
     read_events_file(patients, dir_name, mimic_desc, max_lines=args.max_lines)
     patients_shelve.update(patients)
     with open(args.output_list, 'wb') as o_p:
-        pickle.dump(patients.keys(), op)
+        pickle.dump(patients.keys(), o_p)
 
