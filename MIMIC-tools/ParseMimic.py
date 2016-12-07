@@ -77,7 +77,6 @@ def read_events_file(patients, dir_name, mimic_desc, max_lines=-1):
             print "ERROR-------- Line", split_line
     file_name = pjoin(dir_name, 'DIAGNOSES_ICD_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
-        DiagnosisEvent(patients, mimic_desc, split_line)
         try:
             DiagnosisEvent(patients, mimic_desc, split_line)
         except:

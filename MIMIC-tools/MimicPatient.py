@@ -104,3 +104,29 @@ class MimicPatient:
 
         # Maps admission_ids to admission class object
         self.admissions     = {}
+
+
+    def __str__(self):
+        res = '---------------- PATIENT \t' + self.patient_id + '\n'
+        res += '--GENDER-- ' + self.gender
+        res += '\t --DOB-- ' + self.dob
+        res += '\t --DOD-- ' + self.dod
+        res += '\t --Hosp_EXPIRED-- ' + self.expire_flag + '\n'
+        res += '---------------- ADMISSIONS \t' + str(len(self.admissions)) + '\n'
+        admissions = sorted(self.admissions.items(), key=lambda x:x[1].in_time)
+        for adm_id, adm in admissions:
+            res += '----ADMISSION-- ' + adm_id
+            res += '\t --START-- ' + adm.in_time
+            res += '\t --END-- ' + adm.out_time + '\n'
+            res += str(len(adm.cpt_events)) + ' CPT EVENTS \t'
+            res += str(len(adm.icu_events)) + ' ICU STAYS \t'
+            res += str(len(adm.lab_events)) + ' LABS \t'
+            res += str(len(adm.mic_events)) + ' MICROBIOLOGY \t'
+            res += str(len(adm.drg_events)) + ' DRUGS BILLED \n'
+            res += str(len(adm.psc_events)) + ' PRESCRIPTIONS \t'
+            res += str(len(adm.pcd_events)) + ' PROCEDURES \t'
+            res += str(len(adm.dgn_events)) + ' DIAGNOSES \t'
+            res += str(len(adm.nte_events)) + ' NOTES\n'
+            res += '-------------- \n'
+        return res
+
