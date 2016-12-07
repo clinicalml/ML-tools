@@ -28,6 +28,8 @@ class MimicAdmission:
         else:
             self.patient_id     = patient_id
             self.admission_id   = admission_id
+            self.in_time        = '0001-01-01 00:00:00'
+            self.out_time       = '0001-01-01 00:00:00'
         
         try:
             self.patient    = patients[self.patient_id]
@@ -42,8 +44,44 @@ class MimicAdmission:
         self.psc_events = []
         self.pcd_events = []
         self.nte_events = []
+        self.dgn_events = []
 
         self.patient.admissions[self.admission_id] = self
+
+
+    def __str__(self, max_n=5):
+        res = self.in_time + '\t ADMISSION \t' + self.admission_id + '\n'
+        res += self.adm_type + '\t IN \t' + self.in_loc + '\t OUT \t' + self.out_loc  + '\n'
+        res += 'LANG \t' + self.language + '\t REL \t' + self.religion  + '\t'
+        res += 'MARRIED \t' + self.married + '\t ETHNO \t' + self.ethnicity  + '\n'
+        res += '----- CPT EVENTS \n'
+        for evt in sorted(self.cpt_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- ICU ADMISSIONS \n'
+        for evt in sorted(self.icu_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- LABS \n'
+        for evt in sorted(self.lab_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- MICROBIOLOGY \n'
+        for evt in sorted(self.mic_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- DRUGS \n'
+        for evt in sorted(self.drg_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- PRESCRIPTIONS \n'
+        for evt in sorted(self.psc_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- PROCEDURES \n'
+        for evt in sorted(self.pcd_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- NOTES \n'
+        for evt in sorted(self.nte_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        res += '----- DIAGNOSES \n'
+        for evt in sorted(self.dgn_events, key=lambda x:x.time)[:max_n]:
+            res += str(evt) + '\n'
+        return res
 
 class MimicPatient:
 
