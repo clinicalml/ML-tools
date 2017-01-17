@@ -45,7 +45,7 @@ def split_file(file_name):
             sys.stdout.flush()
         if ct % 1000000 == 0:
             print(ct / 1000, len(patients))
-            for pid, lines in list(patients.items()):
+            for pid, lines in patients.items():
                 bid = int(pid) / 1000
                 if bid > 100:
                     pprint(lines)
@@ -55,7 +55,7 @@ def split_file(file_name):
                 of.close()
             patients = {}
             print('next')
-    for pid, lines in list(patients.items()):
+    for pid, lines in patients.items():
         bid = int(pid) / 1000
         of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
         for l in lines:
