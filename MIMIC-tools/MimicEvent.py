@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from MimicDesc import *
 from MimicPatient import *
 
@@ -11,7 +15,7 @@ class MimicEvent(object):
         try:
             self.patient    = patients[patient_id]
         except:
-            print 'ERROR--------', '\t', 'PATIENT NOT FOUND', patient_id
+            print('ERROR--------', '\t', 'PATIENT NOT FOUND', patient_id)
 
         try:
             self.admission  = self.patient.admissions[admission_id]
@@ -20,7 +24,7 @@ class MimicEvent(object):
                                                                    patient_id=patient_id,
                                                                    admission_id=admission_id)
             self.admission  = self.patient.admissions[admission_id]
-            print 'ERROR--------', '\t', 'ADMISSION NOT FOUND PTT', patient_id, 'ADM', admission_id, '\r',
+            print('ERROR--------', '\t', 'ADMISSION NOT FOUND PTT', patient_id, 'ADM', admission_id, '\r', end=' ')
 
         self.time           = self.admission.out_time
 

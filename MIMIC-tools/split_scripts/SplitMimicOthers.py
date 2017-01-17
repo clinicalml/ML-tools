@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import os
 from os.path import join as pjoin
 
@@ -27,35 +31,35 @@ for i in range(100):
 
 
 def split_file(file_name):
-    print file_name
+    print(file_name)
     ct = 0
     f = open(pjoin(MIMIC_dir, file_name))
-    print f.readline()
+    print(f.readline())
     patients = {}
     for line in f:
         patient_id = line[:25].split(',')[1]
         patients[patient_id] = patients.get(patient_id, []) + [line]
         ct += 1
         if ct % 10000 == 0:
-            print ct / 1000, '\r',
+            print(ct / 1000, '\r', end=' ')
             sys.stdout.flush()
         if ct % 1000000 == 0:
-            print ct / 1000, len(patients)
-            for pid, lines in patients.items():
+            print(ct / 1000, len(patients))
+            for pid, lines in list(patients.items()):
                 bid = int(pid) / 1000
                 if bid > 100:
                     pprint(lines)
                 of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
                 for l in lines:
-                    print >>of, l
+                    print(l, file=of)
                 of.close()
             patients = {}
-            print 'next'
-    for pid, lines in patients.items():
+            print('next')
+    for pid, lines in list(patients.items()):
         bid = int(pid) / 1000
         of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
         for l in lines:
-            print >>of, l
+            print(l, file=of)
         of.close()
     f.close()
 

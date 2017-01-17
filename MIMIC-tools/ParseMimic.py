@@ -1,7 +1,14 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import argparse
 import shelve
 
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 from os.path import join as pjoin
 
@@ -16,11 +23,11 @@ def read_patients_file(file_name, mimic_desc, max_lines=-1):
         try:
             patient = MimicPatient(mimic_desc, split_line)
             if patient.patient_id in patients:
-                print "DUPLICATE OBSERVATIONS FOR PATIENT_ID:", patient.patient_id
+                print("DUPLICATE OBSERVATIONS FOR PATIENT_ID:", patient.patient_id)
             else:
                 patients[patient.patient_id] = patient
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     return patients
 
 
@@ -29,7 +36,7 @@ def read_admissions_file(patients, file_name, mimic_desc, max_lines=-1):
         try:
             MimicAdmission(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
 
 
 def read_events_file(patients, dir_name, mimic_desc, max_lines=-1):
@@ -38,55 +45,55 @@ def read_events_file(patients, dir_name, mimic_desc, max_lines=-1):
         try:
             CptEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'ICUSTAYEVENTS_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             IcuEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'LABEVENTS_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             LabEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'MICROBIOLOGYEVENTS_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             MicroEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'DRGCODES_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             DrugEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'PRESCRIPTIONS_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             PrescriptionEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'PROCEDURES_ICD_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             ProcedureEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'DIAGNOSES_ICD_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             DiagnosisEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
     file_name = pjoin(dir_name, 'NOTEEVENTS_DATA_TABLE.csv')
     for split_line in read_mimic_csv(file_name, max_lines=max_lines):
         try:
             NoteEvent(patients, mimic_desc, split_line)
         except:
-            print "ERROR-------- Line", split_line
+            print("ERROR-------- Line", split_line)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='This program reads the \
@@ -115,5 +122,5 @@ if __name__ == "__main__":
     read_events_file(patients, dir_name, mimic_desc, max_lines=args.max_lines)
     patients_shelve.update(patients)
     with open(args.output_list, 'wb') as o_p:
-        pickle.dump(patients.keys(), o_p)
+        pickle.dump(list(patients.keys()), o_p)
 
