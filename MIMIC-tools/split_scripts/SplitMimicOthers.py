@@ -41,12 +41,12 @@ def split_file(file_name):
         patients[patient_id] = patients.get(patient_id, []) + [line]
         ct += 1
         if ct % 10000 == 0:
-            print(ct / 1000, '\r', end=' ')
+            print(ct // 1000, '\r', end=' ')
             sys.stdout.flush()
         if ct % 1000000 == 0:
-            print(ct / 1000, len(patients))
+            print(ct // 1000, len(patients))
             for pid, lines in patients.items():
-                bid = int(pid) / 1000
+                bid = int(pid) // 1000
                 if bid > 100:
                     pprint(lines)
                 of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
@@ -56,7 +56,7 @@ def split_file(file_name):
             patients = {}
             print('next')
     for pid, lines in patients.items():
-        bid = int(pid) / 1000
+        bid = int(pid) // 1000
         of = open(pjoin(output_dir, '%02d/%s' % (bid, file_name)),'a')
         for l in lines:
             print(l, file=of)

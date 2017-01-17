@@ -33,7 +33,7 @@ def treat_line(line):
 
 def read_visit(lines):
 	header = lines[0]
-	bid = int(lines[0].split(',')[2]) / 1000
+	bid = int(lines[0].split(',')[2]) // 1000
 	if bid >= 100:
 		pprint(lines[0])
 		print(lines[0].split(','))
@@ -63,7 +63,7 @@ for line in f:
 		st = []
 		ct += 1
 		if ct % 25000 == 0:
-			print(float(ct) / 2.5e4)
+			print(ct / 2.5e4)
 			for bid, visits in patients.items():
 				of = open(pjoin(output_dir, '%02d/NOTEEVENTS_DATA_TABLE.csv' % (bid,)),'a')
 				for (header, text) in visits:
