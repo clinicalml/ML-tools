@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import os
 import glob
 import re
@@ -29,11 +33,11 @@ def treat_line(line):
 
 def read_visit(lines):
 	header = lines[0]
-	bid = int(lines[0].split(',')[2]) / 1000
+	bid = int(lines[0].split(',')[2]) // 1000
 	if bid >= 100:
 		pprint(lines[0])
-		print lines[0].split(',')
-		print lines[0].split(',')[2]
+		print(lines[0].split(','))
+		print(lines[0].split(',')[2])
 	text = [treat_line(line) for line in lines[1:]]
 	res = ['\n']
 	for line in text:
@@ -51,7 +55,7 @@ ct = 0
 st = []
 patients = {}
 f = open(pjoin(MIMIC_dir, 'NOTEEVENTS_DATA_TABLE.csv'))
-print f.readline()
+print(f.readline())
 for line in f:
 	if line.strip() == '"':
 		(bid, header, text) = read_visit(st)
@@ -59,14 +63,14 @@ for line in f:
 		st = []
 		ct += 1
 		if ct % 25000 == 0:
-			print float(ct) / 2.5e4
+			print(ct / 2.5e4)
 			for bid, visits in patients.items():
 				of = open(pjoin(output_dir, '%02d/NOTEEVENTS_DATA_TABLE.csv' % (bid,)),'a')
 				for (header, text) in visits:
-					print >>of, '<VISIT>'
-					print >>of, header
-					print >>of, text
-					print >>of, '</VISIT>'
+					print('<VISIT>', file=of)
+					print(header, file=of)
+					print(text, file=of)
+					print('</VISIT>', file=of)
 				of.close()
 			patients = {}
 	else:

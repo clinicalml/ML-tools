@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from os.path import join as pjoin
 
 from Utils import *
@@ -174,7 +178,7 @@ class MimicDesc:
                 code    = split_line[indices['CODE']]
                 self.dictionaries['D_ITEMS'][itemid] = label
             except:
-                print "ERROR-------- Line", split_line
+                print("ERROR-------- Line", split_line)
         # D_LABITEMS_DATA_TABLE.csv: labs
         self.dictionaries['D_LABS']     = {}
         indices     = self.indices['D_LABS']
@@ -186,7 +190,7 @@ class MimicDesc:
                 code    = split_line[indices['LOINC_CODE']]
                 self.dictionaries['D_LABS'][itemid] = (label, code)
             except:
-                print "ERROR-------- Line", split_line
+                print("ERROR-------- Line", split_line)
         # D_ICD_DIAGNOSES_DATA_TABLE.csv: diagnoses
         self.dictionaries['D_DGN']      = {}
         indices     = self.indices['D_DGN']
@@ -198,7 +202,7 @@ class MimicDesc:
                 name_l  = split_line[indices['LONG_TITLE']]
                 self.dictionaries['D_DGN'][icd9] = (name_s, name_l)
             except:
-                print "ERROR-------- Line", split_line
+                print("ERROR-------- Line", split_line)
         # D_ICD_PROCEDURES_DATA_TABLE.csv: procedures
         self.dictionaries['D_PCD']      = {}
         indices     = self.indices['D_PCD']
@@ -210,7 +214,7 @@ class MimicDesc:
                 name_l  = split_line[indices['LONG_TITLE']]
                 self.dictionaries['D_PCD'][icd9] = (name_s, name_l)
             except:
-                print "ERROR-------- Line", split_line
+                print("ERROR-------- Line", split_line)
 
 
 

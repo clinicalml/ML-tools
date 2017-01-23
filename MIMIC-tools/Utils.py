@@ -1,11 +1,15 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 def read_mimic_csv(file_name, max_lines=-1):
     split_line  = []
     cur_item    = ''
     try:
         f = open(file_name)
-        print "Reading", file_name
+        print("Reading", file_name)
     except:
-        print "ERROR-------- File", file_name, "not found."
+        print("ERROR-------- File", file_name, "not found.")
     read_lines = 0
     for line in f:
         if len(line.strip()) > 0:
